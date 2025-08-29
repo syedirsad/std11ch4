@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilingual NEET Physics Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Baloo+Bhai+2:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- KaTeX for mathematical rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGqsACycJdHgV" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURPiLdVWG/nF3vr/2s+m/2R5iIeYcixlqsKTnHj/I959HAYoEAMALi" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --primary-dark: #0d1b2a;
+            --primary-medium: #1b263b;
+            --primary-light: #415a77;
+            --accent-blue: #4361ee;
+            --accent-light: #4cc9f0;
+            --text-light: #e0e1dd;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(67, 97, 238, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 80% 10%, rgba(76, 201, 240, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 40% 80%, rgba(67, 97, 238, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .gujarati {
+            font-family: 'Baloo Bhai 2', sans-serif;
+        }
+        
+        #quiz-container {
+            background: rgba(27, 38, 59, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(65, 90, 119, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #quiz-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-light));
+        }
+
+        .header-graphic {
+            height: 100px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(76, 201, 240, 0.1) 100%);
+            border-bottom: 1px solid rgba(65, 90, 119, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .motion-path {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .moving-object {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--accent-light);
+            animation: moveObject 8s linear infinite;
+        }
+        
+        @keyframes moveObject {
+            0% { transform: translateX(-20px) translateY(50px); }
+            25% { transform: translateX(25%) translateY(20px); }
+            50% { transform: translateX(50%) translateY(70px); }
+            75% { transform: translateX(75%) translateY(30px); }
+            100% { transform: translateX(calc(100% + 20px)) translateY(50px); }
+        }
+        
+        .option-btn {
+            background: rgba(27, 38, 59, 0.7);
+            border: 1px solid rgba(65, 90, 119, 0.7);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-light);
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-blue);
+        }
+
+        .option-btn.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #16a34a;
+            color: white;
+        }
+        
+        .option-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #dc2626;
+            color: white;
+        }
+        
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        #next-btn, #restart-btn {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        #next-btn:hover, #restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(67, 97, 238, 0.5);
+        }
+        
+        #score-display {
+            background: rgba(27, 38, 59, 0.7);
+            border: 1px solid rgba(65, 90, 119, 0.7);
+            border-radius: 12px;
+            padding: 8px 16px;
+            color: var(--accent-light);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(65, 90, 119, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        #progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-light));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .katex {
+           font-size: 1.1em;
+           color: var(--text-light);
+        }
+        #question-text p {
+            margin-bottom: 0.75rem;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="w-full max-w-2xl mx-auto transition-all duration-300">
+        <div class="header-graphic">
+            <div class="motion-path">
+                <div class="moving-object"></div>
+            </div>
+        </div>
+        
+        <div class="p-6 sm:p-8">
+            <div class="flex justify-end items-center mb-6">
+                <span class="mr-3 font-medium text-sm text-gray-300">English</span>
+                <label for="language-toggle" class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="language-toggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+                <span class="ml-3 font-medium text-sm text-gray-300 gujarati">ગુજરાતી</span>
+            </div>
+
+            <h1 id="quiz-title" class="text-2xl sm:text-3xl font-bold text-center text-blue-400 mb-2"></h1>
+            <p id="quiz-subtitle" class="text-center text-gray-400 mb-6"></p>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="question-number" class="text-lg font-semibold text-gray-300"></h2>
+                    <div id="score-display" class="text-lg font-semibold"></div>
+                </div>
+                <div id="question-text" class="text-xl font-medium mb-6 min-h-[6rem]"></div>
+                <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="result-area" class="hidden text-center py-8">
+                 <div class="mb-6">
+                    <svg class="w-24 h-24 mx-auto text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 id="result-title" class="text-3xl font-bold mb-4"></h2>
+                <p id="result-text" class="text-xl mb-6"></p>
+                <button id="restart-btn" class="w-full sm:w-auto font-semibold py-3 px-8"></button>
+            </div>
+
+            <div class="mt-8 text-center">
+                <button id="next-btn" class="w-full sm:w-auto font-semibold py-3 px-8 hidden"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {"question_number":1,"en":{"question":"A player catches a ball of mass 150 g moving at a speed of 20 m/s. If the catching process is completed in 0.1 s, the force exerted by the ball on the player's hand will be...","options":{"A":"150 N","B":"3 N","C":"30 N","D":"300 N"}},"gu":{"question":"એક ખેલાડી 150 g દળના અને 20 m/s ના દર (ઝડપ)થી ગતિ કરતા બોલને પકડે છે. જો આ કેચ પકડવાની પ્રક્રિયા 0.1 sમાં પૂર્ણ થાય તો બોલ દ્વારા ખેલાડીના હાથ પર લાગતું બળ (મૂલ્યમાં) હશે.","options":{"A":"150 N","B":"3 N","C":"30 N","D":"300 N"}},"answer":"C"},
+            {"question_number":2,"en":{"question":"The velocity of a particle of mass 500 g at any instant is \\((2t\\hat{i} + 3t^2\\hat{j}) \\text{ m/s}\\). If the force acting on the particle at \\(t=1s\\) is \\((\\hat{i} + x\\hat{j})\\) N, then the value of \\(x\\) will be...","options":{"A":"3","B":"4","C":"6","D":"2"}},"gu":{"question":"કોઈ પણ ક્ષણે 500 g દ્રવ્યમાન ધરાવતા કણનો વેગ \\((2t\\hat{i} + 3t^2\\hat{j}) \\text{ ms}^{-1}\\) છે. જો કણ પર લાગતું બળ \\(t=1s\\) સમયે \\((\\hat{i} + x\\hat{j})N\\) હોય, તો \\(x\\) નું મૂલ્ય ...... હશે.","options":{"A":"3","B":"4","C":"6","D":"2"}},"answer":"A"},
+            {"question_number":3,"en":{"question":"A body of mass 500g moves along the x-axis such that its velocity varies with displacement \\(x\\) as \\(v = 10\\sqrt{x} \\text{ m/s}\\). The force acting on the body is ____ N.","options":{"A":"166","B":"25","C":"125","D":"5"}},"gu":{"question":"500g નું વજન ધરાવતો પદાર્થ x-અક્ષ પર એવી રીતે ગતિ કરે છે કે જેનો વેગ, સ્થાનાંતર \\(x\\) સાથે \\(v = 10\\sqrt{x} \\text{ m/s}\\) ના સંબંધથી બદલાય છે. આ પદાર્થ પર લાગતું બળ ____ N.","options":{"A":"166","B":"25","C":"125","D":"5"}},"answer":"B"},
+            {"question_number":4,"en":{"question":"Three forces \\(F_1=10\\text{ N}\\), \\(F_2=8\\text{N}\\) and \\(F_3=6\\text{ N}\\) are acting on a particle of mass 5 kg. The forces \\(F_2\\) and \\(F_3\\) are applied perpendicularly so that the particle is at rest. If the force \\(F_1\\) is removed, the acceleration of the particle will be ... \\(\\text{m/s}^2\\).","options":{"A":"2","B":"0.5","C":"4.8","D":"7"}},"gu":{"question":"5 kg દળના એક કણ પર ત્રણ બળો \\(F_1=10\\text{ N}\\), \\(F_2=8\\text{N}\\) અને \\(F_3=6\\text{ N}\\) લગાડેલા છે. બળ \\(F_2\\) અને \\(F_3\\) લંબરૂપે એવી રીતે લગાડેલા છે કે જેથી કણ સ્થિર રહે. જો બળ \\(F_1\\) ને દૂર કરવામાં આવે, તો કણનો પ્રવેગ ... \\(\\text{ms}^{-2}\\) થાય.","options":{"A":"2","B":"0.5","C":"4.8","D":"7"}},"answer":"A"},
+            {"question_number":5,"en":{"question":"A bullet of mass 10 g is fired from a gun barrel at a speed of 600 m/s. If the gun barrel is 50 cm long and the gun has a mass of 3 kg, the impulse exerted by the bullet will be . Ns.","options":{"A":"12","B":"6","C":"36","D":"3"}},"gu":{"question":"10 g દળ ધરાવતી ગોળી (બુલેટ) બંદૂકની નળીમાંથી 600 m/s ની ઝડપથી છુટે છે. જો બંદૂકની નળી 50 cm લાંબી હોય અને બંદૂક 3 kg નું દળ ધરાવે, તો ગોળી દ્વારા લગાવેલ આઘાત . Ns હશે.","options":{"A":"12","B":"6","C":"36","D":"3"}},"answer":"B"},
+            {"question_number":6,"en":{"question":"The position vector of a particle with time \\(t\\) is given by \\(\\vec{r} = (10t\\hat{i} + 15t^2\\hat{j} + 7\\hat{k})\\) m. The direction of the net force experienced by the particle is .....","options":{"A":"Positive y-axis","B":"Positive x-axis","C":"Positive z-axis","D":"In the x-y plane"}},"gu":{"question":"કણનો સ્થાન સદિશ સમય \\(t\\) સાથે \\(\\vec{r} = (10t\\hat{i} + 15t^2\\hat{j} + 7\\hat{k})\\) m મુજબ દર્શાવવામાં આવે છે. તો કણે અનુભવેલ પરિણામી બળની દિશા ..... છે.","options":{"A":"ધન y-અક્ષ","B":"ધન x-અક્ષ","C":"ધન z-અક્ષ","D":"x-y સમતલમાં"}},"answer":"A"},
+            {"question_number":7,"en":{"question":"A body of mass 1000 kg is moving horizontally with a velocity of 6 m/s. If an additional mass of 200 kg is added, the final velocity in m/s will be .....","options":{"A":"6","B":"2","C":"3","D":"5"}},"gu":{"question":"1000 kg દળનો એક પદાર્થ 6 m/s વેગથી સમક્ષિતિજ દિશામાં ગતિ કરે છે. જો વધારાનું 200 kg દળ ઉમેરવામાં આવે તો, m/s માં અંતિમ વેગ ..... થશે.","options":{"A":"6","B":"2","C":"3","D":"5"}},"answer":"D"},
+            {"question_number":8,"en":{"question":"A spherical object of mass 100 g is dropped from a height of 10 m from the ground. After hitting the ground, the object rebounds to a height of 5 m from the ground. The impulse exerted by the ground on the object will be ..... (\\(g=9.8 \\text{ m/s}^2\\))","options":{"A":"4.32 kg m/s","B":"43.2 kg m/s","C":"23.9 kg m/s","D":"2.39 kg m/s"}},"gu":{"question":"100 g દળ ધરાવતા એક ગોલીય પદાર્થને જમીનથી 10 m ઉંચાઈએ થી છોડવામાં આવે છે. જમીનને અથડાયા બાદ પદાર્થ જમીન થી 5 m ઉંચાઈએ રીબાઉન્સ થાય છે. જમીન દ્વારા પદાર્થ ઉપર લાગૂ પડતો આવેગ ..... હશે. (\\(g=9.8 \\text{ m/s}^2\\))","options":{"A":"4.32 \\(\\text{kg ms}^{-1}\\)","B":"43.2 \\(\\text{kg ms}^{-1}\\)","C":"23.9 \\(\\text{kg ms}^{-1}\\)","D":"2.39 \\(\\text{kg ms}^{-1}\\)"}},"answer":"D"},
+            {"question_number":9,"en":{"question":"A cannon of mass \\(M_1\\) fires a shell of mass \\(M_2\\) horizontally. Immediately after firing, the ratio of the kinetic energy of the cannon to the shell is.......","options":{"A":"\\(M_1 / (M_1 + M_2)\\)","B":"\\(M_2 / M_1\\)","C":"\\(M_2 / (M_1 + M_2)\\)","D":"\\(M_1 / M_2\\)"}},"gu":{"question":"\\(M_1\\) દળ ધરાવતી એક તોપ માંથી \\(M_2\\) દળ ધરાવતા એક ગોળાને સમક્ષિતિજ ફાયર કરાવામાં આવે છે તો ફાયરિંગ કર્યા બાદ તરત જ તોપ અને ગોળાની ગતિ ઊર્જાનો ગુણોત્તર.......","options":{"A":"\\(M_1 / (M_1 + M_2)\\)","B":"\\(M_2 / M_1\\)","C":"\\(M_2 / (M_1 + M_2)\\)","D":"\\(M_1 / M_2\\)"}},"answer":"B"},
+            {"question_number":10,"en":{"question":"A simple pendulum of length 1 m has a bob of mass 1 kg. A bullet of mass \\(10^{-2}\\) kg strikes it with a speed of \\(2 \\times 10^2 \\text{ m/s}\\). The bullet gets embedded inside the bob. The height to which the bob rises before turning back is .... (take \\(g = 10 \\text{ m/s}^2\\))","options":{"A":"0.30 m","B":"0.20 m","C":"0.35 m","D":"0.40 m"}},"gu":{"question":"1 m લંબાઈનું સાદું લોલક 1 kg દળનું દોલક ધરાવે છે. તેના પર \\(10^{-2}\\) kg દળની બુલેટ \\(2 \\times 10^2 \\text{ ms}^{-1}\\) ઝડપથી અથડાય છે. આ બુલેટ દોલકની અંદર ખૂંચી જાય છે. દોલકે પાછુ વળે તે પહેલાની ઉંચાઈ .... છે. (\\(g = 10 \\text{ m/s}^2\\) લો)","options":{"A":"0.30 m","B":"0.20 m","C":"0.35 m","D":"0.40 m"}},"answer":"B"},
+            {"question_number":11,"en":{"question":"A body of mass 4 kg experiences two forces \\(F_1 = (5\\hat{i} + 8\\hat{j} + 7\\hat{k})\\) and \\(F_2 = (3\\hat{i} - 4\\hat{j} - 3\\hat{k})\\). The acceleration of the body will be .....","options":{"A":"\\(-2\\hat{i} - \\hat{j} - \\hat{k}\\)","B":"\\(4\\hat{i} + 2\\hat{j} + 2\\hat{k}\\)","C":"\\(2\\hat{i} + \\hat{j} + \\hat{k}\\)","D":"\\(2\\hat{i} + 3\\hat{j} + 3\\hat{k}\\)"}},"gu":{"question":"4 kg દળ ધરાવતો એક પદાર્થ બે બળો \\(F_1 = (5\\hat{i} + 8\\hat{j} + 7\\hat{k})\\) and \\(F_2 = (3\\hat{i} - 4\\hat{j} - 3\\hat{k})\\) અનુભવે છે. પદાર્થમાં પ્રવેગ ..... હશે.","options":{"A":"\\(-2\\hat{i} - \\hat{j} - \\hat{k}\\)","B":"\\(4\\hat{i} + 2\\hat{j} + 2\\hat{k}\\)","C":"\\(2\\hat{i} + \\hat{j} + \\hat{k}\\)","D":"\\(2\\hat{i} + 3\\hat{j} + 3\\hat{k}\\)"}},"answer":"C"},
+            {"question_number":12,"en":{"question":"A wooden block of mass 5 kg is placed on a soft horizontal floor. When an iron cylinder of mass 25 kg is placed on top of the block, the floor yields, and the block and cylinder together move downwards with an acceleration of \\(0.1 \\text{ m/s}^2\\). The force exerted by the system on the floor is .....","options":{"A":"297 N","B":"294 N","C":"291 N","D":"196 N"}},"gu":{"question":"લાકડાનું 5 kg દળ ધરાવતું એક ચોસલું પોચા સમક્ષિતિજ ભોંયતળિયા ઉપર રહેલ છે. જ્યારે 25 kg દળના લોખંડના એક નળાકારને ચોસલાની ઉપર મૂકવામાં આવે છે ત્યારે ભોંયતળિયું દબાય છે, અને ચોસલું અને નળાકાર બંને એકી સાથે \\(0.1 \\text{ ms}^{-2}\\) ના પ્રવેગથી નીચે તરફ ગતિ કરે છે. ભોંયતળિયા પર આ તંત્ર દ્વારા લાગતું બળ .....","options":{"A":"297 N","B":"294 N","C":"291 N","D":"196 N"}},"answer":"C"},
+            {"question_number":13,"en":{"question":"If the impulse \\(I\\) varies with time \\(t\\) as \\(I(\\text{kg m/s}) = 20t^2 - 40t\\), the change in momentum will be minimum at .....?","options":{"A":"\\(t = 2\\)","B":"\\(t = 1\\)","C":"\\(t = 1/2\\)","D":"\\(t = 3/2\\)"}},"gu":{"question":"જો આઘાત(આવેગ) \\(I\\) સમય \\(t\\) સાથે \\(I(\\text{kgms}^{-1}) = 20t^2 - 40t\\) તરીકે બદલાય છે, તો વેગમાનમાં થતો ફેરફાર ..... એ ન્યૂનતમ હશે?","options":{"A":"\\(t = 2\\)","B":"\\(t = 1\\)","C":"\\(t = 1/2\\)","D":"\\(t = 3/2\\)"}},"answer":"B"},
+            {"question_number":14,"en":{"question":"If the final momentum of a system is equal to its initial momentum, then","options":{"A":"No net force is acting on the system","B":"A net force will always be acting on the system","C":"A net force may be acting on the system","D":"Both (a) and (b)"}},"gu":{"question":"જો કોઈ તંત્રનો અંતિમ વેગમાન એ તેના પ્રારંભિક વેગમાનને બરાબર હોય તો","options":{"A":"તંત્ર પર કોઈ ચોખ્ખું બળ લાગતું નથી","B":"તંત્ર પર હંમેશા ચોખ્ખું બળ લાગતું હશે","C":"તંત્ર પર ચોખ્ખું બળ લાગતું હોઈ શકે છે","D":"(a) અને (b) બંને"}},"answer":"A"},
+            {"question_number":15,"en":{"question":"What force should be applied on the wedge so that the block on it does not move? (All surfaces are smooth)","options":{"A":"\\(F = (M+m)g \\cot(\\theta)\\)","B":"\\(F = (M+m)g \\tan(\\theta)\\)","C":"\\(F = (M+m)g \\sin(\\theta)\\)","D":"\\(F = (M+m)g \\cos(\\theta)\\)"}},"gu":{"question":"ફાચર (ઢાળ) પર કેટલું બળ લગાડવું જોઈએ કે જેથી તેના પર મુકેલ બ્લોક ખસે નહી? (તમામ સપાટીઓ લીસી છે)","options":{"A":"\\(F = (M+m)g \\cot(\\theta)\\)","B":"\\(F = (M+m)g \\tan(\\theta)\\)","C":"\\(F = (M+m)g \\sin(\\theta)\\)","D":"\\(F = (M+m)g \\cos(\\theta)\\)"}},"answer":"B"},
+            {"question_number":16,"en":{"question":"When an object is at rest","options":{"A":"A force is required to keep it at rest","B":"No force is acting on it.","C":"A large number of forces may be acting on it which balance each other","D":"It is in a vacuum"}},"gu":{"question":"જ્યારે કોઈ પદાર્થ સ્થિર હોય છે","options":{"A":"તેને સ્થિર રાખવા માટે બળ જરૂરી છે","B":"તેના પર કોઈ બળ લાગતો નથી.","C":"મોટી સંખ્યામાં બળો તેના પર લાગતાં હોઈ શકે છે જે એકબીજાને સંતુલિત કરે છે","D":"તે શૂન્યાવકાશમાં છે"}},"answer":"C"},
+            {"question_number":17,"en":{"question":"When the force acting on a moving particle is of constant magnitude and in a fixed direction, then its path is","options":{"A":"Circular","B":"Parabolic","C":"A straight line","D":"(b) or (c)"}},"gu":{"question":"જ્યારે ગતિ કરતાં કણ પર લાગતું બળ અચળ મુલ્યનું અને નિશ્ચિત દિશામાં હોય, તો ત્યારે તેનો પથ છે","options":{"A":"વર્તુળાકાર","B":"પરવલયાકાર","C":"સીધી રેખા","D":"(b) અથવા (c)"}},"answer":"D"},
+            {"question_number":18,"en":{"question":"A bullet of mass 10 g moving at 200 m/s penetrates 5 cm into a wooden plank and stops. The average force exerted on the bullet will be N.","options":{"A":"2000","B":"-2000","C":"4000","D":"-4000"}},"gu":{"question":"200 m/s ની ગતિથી ચાલતી 10 g દળની એક ગોળી લાકડાના પાટિયામાં 5 cm સુધી ઘૂસીને અટકી જાય છે. ગોળી પર લાગેલો સરેરાશ બળ N હશે.","options":{"A":"2000","B":"-2000","C":"4000","D":"-4000"}},"answer":"D"},
+            {"question_number":19,"en":{"question":"According to Newton's third law of motion","options":{"A":"Action and reaction forces never balance each other","B":"Physical contact is not necessary to see the effect of action and reaction forces","C":"This law is applicable when an object is at rest or in motion.","D":"All of the above"}},"gu":{"question":"ન્યૂટનના ગતિના ત્રીજા નિયમ મુજબ","options":{"A":"ક્રિયાબળ અને પ્રતિક્રિયાબળ એકબીજાને ક્યારેય. સંતુલિત કરતા નથી","B":"ક્રિયાબળ અને પ્રતિક્રિયાબળની અસર જોવા માટે, ભૌતિક સંપર્ક જરૂરી નથી","C":"જ્યારે કોઈ પદાર્થ સ્થિર અથવા ગતિમાં છે ત્યારે આ નિયમ લાગું પડે છે.","D":"આપેલ તમામ"}},"answer":"D"},
+            {"question_number":20,"en":{"question":"A weight of \\(Mg\\) is suspended from the middle of a string whose ends are at the same level. The string is not horizontal now. The minimum tension force required to make the string completely straight is.","options":{"A":"\\(Mg/2\\)","B":"\\(Mg \\cos(\\theta)\\)","C":"\\(2Mg \\cos(\\theta)\\)","D":"Infinitely large"}},"gu":{"question":"એક \\(Mg\\) વજનને એક દોરીનાં મધ્યમાં લટકાવવામાં આવ્યું છે જેના છેડાઓ સમાન સ્તર પર છે. દોરી હવે સમક્ષિતિજ નથી. દોરીને સંપૂર્ણપણે સીધી કરવાં માટે જરૂરી લઘુત્તમ તણાવ બળ છે.","options":{"A":"\\(Mg/2\\)","B":"\\(Mg \\cos(\\theta)\\)","C":"\\(2Mg \\cos(\\theta)\\)","D":"અનંત મોટું"}},"answer":"D"},
+            {"question_number":21,"en":{"question":"A uniform rope of mass M and length L is attached vertically to a rigid support at its upper end. Then find the tension in the rope at a distance \\(l\\) from the rigid support.","options":{"A":"\\(Mg(L/(L+l))\\)","B":"\\((Mg/L)(L-l)\\)","C":"\\(Mg\\)","D":"\\((l/L)Mg\\)"}},"gu":{"question":"M દળ અને L લંબાઈની એકરૂપ દોરીને તેનાં ઉપરનાં અંતિમ છેડાને દઢ આધાર સાથે શિરોલંબ રીતે જોડેલ છે. તો પછી દઢ આધારથી \\(l\\) અંતર પર દોરીમાં ઉદભવતો તણાવ શોધો.","options":{"A":"\\(Mg(L/(L+l))\\)","B":"\\((Mg/L)(L-l)\\)","C":"\\(Mg\\)","D":"\\((l/L)Mg\\)"}},"answer":"B"},
+            {"question_number":22,"en":{"question":"A man is sliding down a light rope whose breaking strength is \\(\\eta\\) (\\(\\eta<1\\)) times his weight. Find the maximum acceleration of the man so that the rope breaks immediately.","options":{"A":"\\(g(1-\\eta)\\)","B":"\\(g(1+\\eta)\\)","C":"\\(g\\eta\\)","D":"\\(g/\\eta\\)"}},"gu":{"question":"એક માણસ એક હલકી દોરીથી નીચે લપસી રહ્યો છે જેની તૂટવાની શક્તિ એ માણસની વજનથી \\(\\eta\\) (\\(\\eta<1\\)) ગણી છે. તો માણસનો મહત્તમ પ્રવેગ શોધો કે જેથી દોરી તરત તૂટી જશે.","options":{"A":"\\(g(1-\\eta)\\)","B":"\\(g(1+\\eta)\\)","C":"\\(g\\eta\\)","D":"\\(g/\\eta\\)"}},"answer":"A"},
+            {"question_number":23,"en":{"question":"A firecracker rocket releases gases at a rate of 0.05 kg/s with a velocity of 400 m/s. The accelerating force on the rocket is","options":{"A":"20 dyne","B":"20 N","C":"200N","D":"Zero"}},"gu":{"question":"એક ફટાકડાનું રોકેટ 400 m/s.નાં વેગ સાથે 0.05 kg/s ની દરે વાયુઓ મુક્ત કરે છે. તો રોકેટ પરલાગતું પ્રવેગિત બળ છે","options":{"A":"20 dyne","B":"20 N","C":"200N","D":"શૂન્ય"}},"answer":"B"},
+            {"question_number":24,"en":{"question":"A stationary bomb of 6 kg explodes into three equal pieces P, Q and R. If piece P flies off at a speed of 30 m/s and Q flies off at a speed of 40 m/s making an angle of \\(90^\\circ\\) with the direction of P. The angle between the directions of motion of P and R is approximately-","options":{"A":"\\(143^\\circ\\)","B":"\\(127^\\circ\\)","C":"\\(120^\\circ\\)","D":"\\(150^\\circ\\)"}},"gu":{"question":"એક 6 kg નો સ્થિર બોમ્બ ત્રણ સમાન ટુકડાઓ P, Q અને R માં ફાટે છે. જો ટુકડો P એ 30 m/s ની ઝડપે ઉડી જાય. છે અને Q એ 40 m/s ની ઝડપે P ની દિશા સાથે \\(90^\\circ\\) નો કોણ બનાવતો ઉડે છે. તો P અને R ની ગતિની દિશાઓ વચ્ચેનો કોણ લગભગ છે-","options":{"A":"\\(143^\\circ\\)","B":"\\(127^\\circ\\)","C":"\\(120^\\circ\\)","D":"\\(150^\\circ\\)"}},"answer":"B"},
+            {"question_number":25,"en":{"question":"An open wagon in a freight train is moving with a uniform velocity of 10 m/s. If rain adds water at a rate of 5 kg/s with zero velocity, then the additional force required by the engine to maintain the same velocity of the train is N.","options":{"A":"0.5","B":"20","C":"50","D":"Zero"}},"gu":{"question":"માલગાડીમાં ખુલ્લો ડબ્બો 10 m/s. નાં નિયમિત વેગ સાથે ગતિ કરી રહ્યું છે. જો વરસાદ 5 kg/s ની દરે શૂન્ય વેગ સાથે પાણી ઉમેરતો હોય, તો પછી ગાડીના સમાન વેગને જાળવવા માટે એન્જિન દ્વારા પુરું પાડવામાં આવતું જરુરી વધારાનું બળ N.","options":{"A":"0.5","B":"20","C":"50","D":"Zero"}},"answer":"C"},
+            {"question_number":26,"en":{"question":"A monkey of mass 40 kg climbs a rope, which is suspended from the ceiling and has a breaking load of 600 N. If he climbs the rope with the maximum possible acceleration, then the time taken for the monkey to climb up is s. [The length of the rope is 10 m]","options":{"A":"2","B":"1","C":"4","D":"3"}},"gu":{"question":"40 kg દળનો એક વાંદરો એક દોરડા ઉપર યઢે છે, જે છતથી લટકાવેલો છે જેનો તૂટવાનો ભાર 600 N છે. જો તે મહત્તમ શક્ય પ્રવેગ સાથે દોરડા ઉપર ચઢશે, તો પછી વાંદરાને ઉપર ચઢવાં માટે લાગતો સમય s છે. [દોરડાની લંબાઈ છે 10 m]","options":{"A":"2","B":"1","C":"4","D":"3"}},"answer":"A"},
+            {"question_number":27,"en":{"question":"A stationary object of mass 2 kg starts moving from its origin under the influence of a force \\(F = (3t^2\\hat{i} + 4\\hat{j})\\) N. The velocity of the object at time \\(t=2\\) s will be m/s.","options":{"A":"\\((3\\hat{i} + 2\\hat{j})\\)","B":"\\((2\\hat{i} + 4\\hat{j})\\)","C":"\\((4\\hat{i} + 4\\hat{j})\\)","D":"\\((3\\hat{i} - 4\\hat{j})\\)"}},"gu":{"question":"2 kg દળનો કોઈ સ્થિર પદાર્થ \\(t=2\\) s સમય પર \\(F = (3t^2\\hat{i} + 4\\hat{j})\\) N બળની અસર હેઠળ તેના ઉગમબિંદુથી ગતિ કરવાનું શરૂ કરે છે. પદાર્થનો વેગ m/s હશે.","options":{"A":"\\((3\\hat{i} + 2\\hat{j})\\)","B":"\\((2\\hat{i} + 4\\hat{j})\\)","C":"\\((4\\hat{i} + 4\\hat{j})\\)","D":"\\((3\\hat{i} - 4\\hat{j})\\)"}},"answer":"C"},
+            {"question_number":28,"en":{"question":"Three forces \\(F_1=(2\\hat{i}+4\\hat{j})\\)N; \\(F_2=(2\\hat{j}-\\hat{k})\\)N and \\(F_3=(\\hat{k}-4\\hat{i}-2\\hat{j})\\)N are applied to a 1 kg mass object at rest at the origin. Where will the object be located after time \\(t=2\\) s?","options":{"A":"(-2m, -6m)","B":"(-4m, 8m)","C":"(3m, 6m)","D":"(2m, -3m)"}},"gu":{"question":"ત્રણ બળો \\(F_1=(2\\hat{i}+4\\hat{j})\\)N; \\(F_2=(2\\hat{j}-\\hat{k})\\)N અને \\(F_3=(\\hat{k}-4\\hat{i}-2\\hat{j})l\\) N ને ઊગમબિંદુ પર સ્થિર રહેલાં 1 kg દળનાં પદાર્થ પર લગાડવામાં આવે છે. તો સમય \\(t=2\\) s પદી પદાર્થનું સ્થાન ક્યાં હશે.","options":{"A":"(-2m,-6 m)","B":"(-4m,8m)","C":"(3m,6m)","D":"(2m,-3m)"}},"answer":"B"},
+            {"question_number":29,"en":{"question":"A ball is dropped by a boy standing in a lift moving upwards with acceleration \\(a\\). What is the acceleration of the ball with respect to? [Take upward direction as positive]","options":{"A":"Boy is \\(-g\\)","B":"Boy is \\(-(g + a)\\)","C":"Ground is \\(-g\\)","D":"Both (b) and (c)"}},"gu":{"question":"એક બોલને ઉપરની તરફ પ્રવેગ \\(a\\) સાથે ગતિ કરતી લીફ્ટમાંથી તેમાં ઉભેલા એક છોકરા દ્વારા છોડવામાં આવે છે. કોના સંદર્ભમાં બોલનો પ્રવેગ શું થાય? [ઉપરની દિશા ધન લો]","options":{"A":"છોકરો - \\(g\\) છે","B":"છોકરો - \\((g + a)\\) છે","C":"જમીન - \\(g\\) છે","D":"(b) અને (c) બંને"}},"answer":"D"},
+            {"question_number":30,"en":{"question":"An object of mass 10 kg is projected from the ground at an angle of \\(60^\\circ\\) with the horizontal with a speed of 40 m/s. What will be the change in its momentum after one second of projection in SI units? [Take \\(g=9.8 \\text{ m/s}^2\\)]","options":{"A":"73","B":"98","C":"176","D":"140"}},"gu":{"question":"એક 10 kg નું દળ ધરાવતા પદાર્થને જમીનથી 40 m/s ની ઝડપે સમક્ષિતિજ સાથે \\(60^\\circ\\) ખૂણે પ્રક્ષિપ્ત કરવામાં આવે છે. પ્રક્ષેપણની એક સેકંડ પછી તેના વેગમાનમાં થતો ફેરફાર SI એકમ પ્રમાણે શું થશે? [\\(g=9.8 \\text{ m/s}^2\\) લો]","options":{"A":"73","B":"98","C":"176","D":"140"}},"answer":"B"},
+            {"question_number":31,"en":{"question":"A stationary object explodes into two pieces of unequal mass. How will its pieces move?","options":{"A":"Randomly","B":"In the same direction","C":"In opposite directions with equal speed","D":"In opposite directions with unequal speed"}},"gu":{"question":"એક સ્થિર રહેલાં પદાર્થ બે અસમાન દળોના ટુકડાઓમાં વિસ્ફોટિત થાય છે. તો તેના ટુકડાઓ કેવી રીતે ગતિ કરશે?","options":{"A":"અવ્યવસ્થિત રીતે","B":"એક જ દિશામાં","C":"સમાન ઝડપ સાથે વિરુદ્ધ દિશાઓમાં","D":"અસમાન ઝડપ સાથે વિરુદ્ધ દિશાઓમાં"}},"answer":"D"},
+            {"question_number":32,"en":{"question":"A block of mass M is pulled along a horizontal frictionless surface by a rope of mass M/2. If a force of 2Mg is applied at one end of the rope, the force on the block is.","options":{"A":"\\(2Mg/3\\)","B":"\\(2Mg\\)","C":"\\(4Mg/3\\)","D":"0"}},"gu":{"question":"M દળના બ્લોકને M/2 દળના દોરડા વડ સક્ષિતિજ ઘર્ષણરહિત સપાટી પર ખેંચવામાં આવે છે. જો દોરડાના એક છેડા પર 2 mg બળ લાગે તો, બ્લોક પર લાગતુ બળ .","options":{"A":"\\(2Mg/3\\)","B":"\\(2Mg\\)","C":"\\(4Mg/3\\)","D":"0"}},"answer":"C"},
+            {"question_number":33,"en":{"question":"A reference frame attached to the Earth cannot be an inertial frame because ......","options":{"A":"The Earth revolves around the Sun","B":"The Earth rotates on its axis","C":"Both (a) and (b)","D":"Newton's laws apply to this frame."}},"gu":{"question":"પૃથ્વી સાથે જોડેલ સંદર્ભ ફ્રેમ એ inertial frame કેમ ના રહી શકે કેમ કે ......","options":{"A":"પૃથ્વી સૂર્ય આસપાસ ભ્રમણ કરે છે","B":"પૃથ્વી પોતાની ધરી પર ભ્રમણ કરે છે","C":"(a) અને (b) બંને","D":"આ ફેમ પર ન્યુટનના નિયમો લાગુ પડે છે."}},"answer":"C"},
+            {"question_number":34,"en":{"question":"Inside a horizontally moving box, an observer sees that an object placed on a smooth horizontal table and released moves with an acceleration of \\(10 \\text{ m/s}^2\\). If a 1 kg object is suspended by a light string in this box, the tension in the string in equilibrium is (observer's) \\(g=10 \\text{ m/s}^2\\)............N","options":{"A":"10","B":"\\(10\\sqrt{2}\\)","C":"20","D":"0"}},"gu":{"question":"સમક્ષિતિજ ગતિ કરતા ખોખાની અંદર, અવલોકનકાર જોવે છે કે એક પદાર્થને સૂવાળા આડા ટેબલ પર મૂકીને છોડવામાં આવે તો તે \\(10 \\text{ m/s}^2\\) ના પ્રવેગથી ગતિ કરે છે. જો આ ખોખામાં 1 kg પદાર્થ હલકી દોરી દ્વારા લટકાવવામાં આવે, તો સંતુલન અવસ્થામાં દોરીમાં તણાવ (અવલોકનકારની ) \\(g=10 \\text{ m/s}^2\\)............N","options":{"A":"10","B":"\\(10\\sqrt{2}\\)","C":"20","D":"0"}},"answer":"B"},
+            {"question_number":35,"en":{"question":"<p>Two statements are given below.</p><p><b>Statement I:</b> The lift can go up or down with uniform speed when its weight is balanced with the tension of its cable.</p><p><b>Statement II:</b> The force exerted by the floor of a lift on the foot of a person standing on it is more than his weight when the lift is going down with increasing speed.</p><p>In the context of both statements, choose the correct answer from the options given below.</p>","options":{"A":"Both Statement-I and Statement-II are false.","B":"Statement-I is true and Statement-II is false.","C":"Both Statement-I and Statement-II are true.","D":"Statement-I is false and Statement-II is true."}},"gu":{"question":"<p>નીચે મુજબ બે કથન આપેલ છે.</p><p><b>કથન I:</b> લીફટ ઉપર અથવા નીચેની તરફ સમાન ઝડપથી જઈ શકશે જ્યારે તેનુ વજન તેના કેબલના તણાવબળ સાથે સંતુલનમાં હોય.</p><p><b>કથન II:</b> લીફટના તળિયા દ્વારા તેમા ઉભી રહેલ વ્યક્તિના પગ પર લાગતું બળ તેના વજન કરતા વધુ હોય જ્યારે લીફટ વધતી જતી ઝડપથી નીચે તરફ જતી હોય.</p><p>બંને કથનના સંદર્મમાં, નીચે આપેલ વિકલ્પોમાંથી સાચો ઉત્તર પસંદ કરી.</p>","options":{"A":"બંને કથન – I અને કથન – II ખોટા છે.","B":"કથન – I સાચું છે અને કથન – II ખોટું છે.","C":"બંને કથન – I અને કથન - II સાચાં છે.","D":"કથન – I ખોટું છે અને કથન – II સાચું છે."}},"answer":"B"},
+            {"question_number":36,"en":{"question":"A 200 g mass is attached to one end of a spring with a spring constant of 12.5 N/m, while the other end is fixed at point O. If the object moves on a smooth horizontal surface with an angular speed of 5 radians/second around point O, the ratio of the extension of the spring to its original length is ........","options":{"A":"1:2","B":"1:1","C":"2:3","D":"2:5"}},"gu":{"question":"12.5 N/m સ્પ્રિંગ અચળાંકવાળી સ્પ્રિંગના એક છેડે 200 g દળનો પદાર્થ લગાડેલો છે જયારે બીજો છેડો O બિંદુએ જડિત કરેલો છે. જો પદર્થ બિંદુ O ને ફરતે 5 રેડિયન/સેકેન્ડ જેટલી કોણીય ઝડપથી લીસી સમક્ષિતિજ સપાટી પર ગતિ કરતો હોય, તો સ્પિંગના ખેંચાણ અને તેની મૂળ લંબાઇનો ગુણોત્તર ........ હોય.","options":{"A":"1:2","B":"1:1","C":"2:3","D":"2:5"}},"answer":"C"},
+            {"question_number":37,"en":{"question":"A force is applied to a 20 kg mass for 20 seconds, after which the force becomes zero and in the next 10 sec the object covers a distance of 50 m. The magnitude of the force is .. N.","options":{"A":"40","B":"5","C":"20","D":"10"}},"gu":{"question":"20 kg દળ ધરાવતી વસ્તુ ઉપર એક બળ 20 સેકન્ડ માટે લાગુ પડે છે, ત્યાર પછી બળ શૂન્ય થાય છે અને પછીની 10 sec માં તે વસ્તુ 50 m અંતર કાપે છે. બળનું મૂલ્ય .. N હશે.","options":{"A":"40","B":"5","C":"20","D":"10"}},"answer":"B"},
+            {"question_number":38,"en":{"question":"A machine gun of mass 10 kg fires bullets of mass 20 g at a speed of \\(100 \\text{ ms}^{-1}\\) and at a rate of 180 per minute. The recoil velocity of the machine gun is........... m/s.","options":{"A":"0.02","B":"2.5","C":"1.5","D":"0.6"}},"gu":{"question":"10 kg દળવાળી એક મશીન ગનમાંથી 20 g દળની \\(100 \\text{ ms}^{-1}\\) ઝડપથી અને 180 પ્રતિ મિનિટ ના દરથી બુલેટ છોડવામાં આવે છે. તો મશીનગનનો રીકોઈલ વેગ........... m/s થાય.","options":{"A":"0.02","B":"2.5","C":"1.5","D":"0.6"}},"answer":"D"},
+            {"question_number":39,"en":{"question":"100 balls, each of mass \\(m\\), moving with a speed \\(v\\), strike a wall perpendicularly. The balls are reflected back with the same speed in \\(t\\) seconds. The total force exerted by the balls on the wall is ...","options":{"A":"\\(100 mv/t\\)","B":"\\(200 mv/t\\)","C":"\\(200 mvt\\)","D":"\\(mv/100t\\)"}},"gu":{"question":"દરેક \\(m\\) દળના 100 દડાઓ, \\(v\\) જેટલી ઝડપથી ગતિ કરી દિવાલને લંબરૂપે અથડાય છે. દડાઓ તેટલી જ ઝડપ સાથે \\(t\\) સેકન્ડમાં પરાવર્તિત થાય છે. દડાઓ દ્વારા દિવાલ ઉપર લગાવાતું કુલ બળ ... થશે.","options":{"A":"\\(100 mv/t\\)","B":"\\(200 mv/t\\)","C":"\\(200 mvt\\)","D":"\\(mv/100t\\)"}},"answer":"B"},
+            {"question_number":40,"en":{"question":"The distance covered in 5 s by a body of mass 5 g moving linearly with a linear momentum of 0.3 kg m/s is .. m.","options":{"A":"300","B":"30","C":"3","D":"0.3"}},"gu":{"question":"0.3 kg m/s રેખીય વેગમાન ધરાવતા રેખીય ગતિ કરતાં 5 g દળના પદાર્થે 5 s માં કાપેલ અંતર .. m હશે.","options":{"A":"300","B":"30","C":"3","D":"0.3"}},"answer":"A"},
+            {"question_number":41,"en":{"question":"<p>Two statements are given below, one labeled as Assertion A and the other as Reason R.</p><p><b>Assertion A:</b> The rotation of an electric fan continues for some time after the current is switched off.</p><p><b>Reason R:</b> The rotation of the fan continues due to inertia of motion.</p><p>In the context of the above statements, choose the most appropriate answer from the given options.</p>","options":{"A":"A is true but R is false.","B":"Both A and R are true and R is the correct explanation of A.","C":"A is false but R is true.","D":"Both A and R are true and R is not the correct explanation of A."}},"gu":{"question":"<p>નીચે બે વિધાનો આપેલા છે એક ને કથન A તરીકે અને બીજાને કારણ R તરીકે લેબલ કરવામાં આવે છે.</p><p><b>કથન A:</b> પ્રવાહ સ્વિચ બંધ કર્યા બાદ અમુક સમય સુધી વિદ્યુત પંખાનું ભ્રમણ ચાલુ રહે છે.</p><p><b>કારણ R:</b> ગતિના જડત્વને કારણે પંખાનું ભ્રમણ ચાલુ રહે છે.</p><p>ઉપર્યુક્ત કથનોના સંદર્ભમાં, આપેલા વિકલ્પોમાંથી સૌથી ઉચિત ઉત્તર પસંદ કરો.</p>","options":{"A":"A સાચું છે પણ R ખોટું છે.","B":"બંને A અને R સાચા છે અને R એ Aનું સાચી સમજૂતી છે.","C":"A ખોટું છે પણ R સાચું છે.","D":"બંને A અને R સાચા છે અને R એ Aનું સાચી સમજૂતી નથી."}},"answer":"B"},
+            {"question_number":42,"en":{"question":"A machine gun firing bullets of 10 g each at a speed of 250 m/s requires an average external force of 125 N to maintain its position. The number of bullets fired per second by the machine gun is ...","options":{"A":"5","B":"50","C":"100","D":"25"}},"gu":{"question":"દરેક 10 g ની એવી બુલેટ (ગોળીઓ) ને 250 m/s ની ઝડપે ફાયર કરતી મશીનગનને, તેના સ્થાન જાળવી રાખવા માટે સરેરાશ 125 N નું બાહ્ય બળ લગાવવું પડે છે. મશીનગન દ્વારા પ્રતિ સેકન્ડમાં ફાયર થતી બુલેટ (ગોળીઓ) ની સંખ્યા ... હશે.","options":{"A":"5","B":"50","C":"100","D":"25"}},"answer":"B"},
+            {"question_number":43,"en":{"question":"Two objects of mass 4 g and 25 g are moving with the same kinetic energy. The ratio of the magnitudes of their linear momentum is_","options":{"A":"3:5","B":"5:4","C":"2:5","D":"4:5"}},"gu":{"question":"4 g અને 25 g દળના બે પદાર્થ સમાન ગતિ ઉર્જા સાથે ગતિ કરે છે. તેમના રેખીય વેગમાનના મૂલ્યોનો ગુણોત્તર_ છે","options":{"A":"3:5","B":"5:4","C":"2:5","D":"4:5"}},"answer":"C"},
+            {"question_number":44,"en":{"question":"A bullet fired at a fixed target loses one-third of its velocity after penetrating 4 cm. It penetrates an additional distance of \\(D \\times 10^{-3}\\) m before coming to rest. The value of D is.","options":{"A":"2","B":"5","C":"32","D":"4"}},"gu":{"question":"એક ગોળી જડિત લક્ષ (ટાર્ગેટ) ઉપર છોડવામાં આવતાં તે 4 cm જેટલું અંતર કાપીને તેનો એક તૃતાંશ વેગ ગુમાવે છે. તે વિરામસ્થિતિમાં આવે તે પહેલાં વધારાનું \\(D \\times 10^{-3}\\) m અંતર ભેદે છે. D નું મૂલ્ય છે.","options":{"A":"2","B":"5","C":"32","D":"4"}},"answer":"C"},
+            {"question_number":45,"en":{"question":"A cricketer catches a ball of 120 g moving with a speed of 25 m/s. If the catching process is completed in 0.1 s, the magnitude of the force exerted by the ball on the player's hand is _(in SI units).","options":{"A":"24","B":"12","C":"25","D":"30"}},"gu":{"question":"એક ક્રિકેટર 120 g ના અને 25 m/s ની ઝડપ ધરાવતા બોલને પકડે છે. જો કેચ પક્ડવાની પ્રક્રિયા 0.1 s માં પૂરી થતી હોય ખેલાડીના હાથ પર બોલ દ્વારા લાગતું બળનું મૂલ્ય _(SI એકમમાં) હશે.","options":{"A":"24","B":"12","C":"25","D":"30"}},"answer":"D"},
+            {"question_number":46,"en":{"question":"A particle moves in the x-y plane under the influence of a force \\(F\\) such that its linear momentum is given by \\(p(t) = \\hat{i} \\cos(kt) - \\hat{j} \\sin(kt)\\). If \\(k\\) is a constant, the angle between \\(F\\) and \\(p\\) is. .","options":{"A":"\\(\\pi/2\\)","B":"\\(\\pi/6\\)","C":"\\(\\pi/4\\)","D":"\\(\\pi/3\\)"}},"gu":{"question":"એક કણ બળ \\(F\\) ની અસર હેઠળ x-y સમતલમાં એવી રીતે ગતિ કરે છે કે તેનું રેખીય વેગમાન \\(p(t) = \\hat{i} \\cos(kt) - \\hat{j} \\sin(kt)\\) થી આપી શાકા છે. જો \\(k\\) એ અચળાંક હોય તો \\(F\\) અને \\(p\\) વચ્ચેનો કોણ. .થશે.","options":{"A":"\\(\\pi/2\\)","B":"\\(\\pi/6\\)","C":"\\(\\pi/4\\)","D":"\\(\\pi/3\\)"}},"answer":"A"},
+            {"question_number":47,"en":{"question":"A light string passing over a light smooth pulley connects two blocks of masses \\(m_1\\) and \\(m_2\\) (where \\(m_2 > m_1\\)). If the acceleration of the system is \\(g/\\sqrt{2}\\), then the ratio of the masses \\(m_1/m_2\\) is .....","options":{"A":"\\((\\sqrt{2}-1)/(\\sqrt{2}+1)\\)","B":"\\((1+\\sqrt{5})/(\\sqrt{5}-1)\\)","C":"\\((1+\\sqrt{5})/(\\sqrt{2}-1)\\)","D":"\\((\\sqrt{3}+1)/(\\sqrt{2}-1)\\)"}},"gu":{"question":"એક હલકી લીસી પુલી (ગરગડી) ઉપરથી પસાર થતી હલકી દોરી, \\(m_1\\) અને \\(m_2\\) (જ્યાં \\(m_2 > m_1\\)) દળ ધરાવતા ચીસલાંને જોડે (બાંધે) છે. જો તંત્રમાં પ્રવેગ \\(g/\\sqrt{2}\\) હોય તો દળોનો ગુણોત્તર ..... હશે.","options":{"A":"\\((\\sqrt{2}-1)/(\\sqrt{2}+1)\\)","B":"\\((1+\\sqrt{5})/(\\sqrt{5}-1)\\)","C":"\\((1+\\sqrt{5})/(\\sqrt{2}-1)\\)","D":"\\((\\sqrt{3}+1)/(\\sqrt{2}-1)\\)"}},"answer":"A"},
+            {"question_number":48,"en":{"question":"An object weighing 200 N is suspended by a chain of mass 10 kg from a tree branch. The tree branch will pull the chain with a force of. . . . . (Take \\(g=10 \\text{ m/s}^2\\).)","options":{"A":"150 N","B":"300 N","C":"200 N","D":"100 N"}},"gu":{"question":"એક ઝાડની ડાળી પરથી 10 kg દળ ધરાવતી સાંકડ વડે 200 N વજન ધરાવતી વસ્તુને લટાકવામાં આવે છે. ઝાડની ડાળી (શાખા) ચેઈનને. . . . . બળ થી ખેચશે. (\\(g=10 \\text{ m/s}^2\\) લો.)","options":{"A":"150 N","B":"300 N","C":"200 N","D":"100 N"}},"answer":"B"},
+            {"question_number":49,"en":{"question":"A light string passing over a smooth light pulley connects two blocks of masses \\(m_1\\) and \\(m_2\\). If the acceleration of the system is \\(g/8\\), then the ratio of the masses \\(m_2/m_1\\) is:","options":{"A":"9:7","B":"4:3","C":"5:3","D":"8:1"}},"gu":{"question":"લીસી હલકી ગરગડી પરથી પસાર થતી એક હલકી દોરી \\(m_1\\) અને \\(m_2\\) દળોનાં બે ચોસલાઓને બાંધે છે. જો તંત્રનો પ્રવેગ \\(g/8\\) હોય તો, દળોનો ગુણોત્તર \\(m_2/m_1\\) :","options":{"A":"9:7","B":"4:3","C":"5:3","D":"8:1"}},"answer":"A"},
+            {"question_number":50,"en":{"question":"The momentum of a particle \\(p\\) (in kg m/s) varies with time \\(t\\) (in s) as \\(p = 2 + 3t^2\\). The force acting on the particle at \\(t=3s\\) will be N.","options":{"A":"18","B":"54","C":"9","D":"15"}},"gu":{"question":"એક કણનો વેગમાન \\(p(\\text{kgm/s})\\) માં એ સમય \\(t\\) (s માં) સાથે \\(p = 2 + 3t^2\\) મુજબ બદલાય છે. તો \\(t=3s\\) એ કણ પર લગાડવામાં આવતું બળ N હશે.","options":{"A":"18","B":"54","C":"9","D":"15"}},"answer":"A"},
+            {"question_number":51,"en":{"question":"An initially stationary machine is on a frictionless surface. It breaks into 2 pieces and moves on the surface. If one piece is moving in the positive x direction, in which direction will the other piece move?","options":{"A":"Positive y direction","B":"Negative y direction","C":"Negative x direction","D":"At an angle with the x direction"}},"gu":{"question":"એક પારંભિક સ્થિર યંત્ર એક ઘર્ધણઘર્ષણમુક્ત સપાટી પર પડ્યું છે. તે 2 ટુકડાઓમાં ફાટે છે અને તે સપાટી પર ખસે છે. જો એક ટુકડો ધન C દિશામાં ગતિ કરી રહ્યો હોય તો બીજો ટુક્ડો કઈ દિશામાં ગતિ કરશે ?","options":{"A":"ધન y દિશામાં","B":"ઋણ y દિશામાં","C":"ઋણ x દિશામાં","D":"æ દિશા સાથે કોઈ ખૂણા પર"}},"answer":"C"},
+            {"question_number":52,"en":{"question":"A body of mass 5 kg is moving with a velocity \\(v=(2\\hat{i}+6\\hat{j})\\) m/s at time \\(t=0\\) s. After time \\(t=2\\) s, the velocity of the body is \\((10\\hat{i}+6\\hat{j})\\). The change in momentum of the body will be kgm/s.","options":{"A":"\\(40\\hat{i}\\)","B":"\\(20\\hat{i}\\)","C":"\\(30\\hat{i}\\)","D":"\\((50\\hat{i}+30\\hat{j})\\)"}},"gu":{"question":"5 kg દળનો એક પદાર્થ \\(t=0\\) s સમય પર \\(v=(2\\hat{i}+6\\hat{j})\\) m/s વેગ સાથે ગતિ કરી રહ્યો છે. તે \\(t=2\\) s સમય પછી પદાર્થનો વેગ \\((10\\hat{i}+6\\hat{j})\\) છે, તો પદાર્થનાં વેગમાનમાં થતો ફેરફાર kgm/s હશે.","options":{"A":"\\(40\\hat{i}\\)","B":"\\(20\\hat{i}\\)","C":"\\(30\\hat{i}\\)","D":"\\((50\\hat{i}+30\\hat{j})\\)"}},"answer":"A"},
+            {"question_number":53,"en":{"question":"What is the average force required to stop a hammer with momentum \\(p\\) Ns in 0.5s?","options":{"A":"\\(2p\\)","B":"\\(p\\)","C":"\\(4p\\)","D":"\\(p/2\\)"}},"gu":{"question":"0.5s માં \\(p\\)N s વેગમાન સાથે હથોડીને રોકવા માટે જરૂરી સરેરાશ બળ N છે?","options":{"A":"\\(2p\\)","B":"\\(p\\)","C":"\\(4p\\)","D":"\\(p/2\\)"}},"answer":"A"},
+            {"question_number":54,"en":{"question":"Why does a runner not stop immediately after crossing the finish line?","options":{"A":"Inertia of rest","B":"Inertia of motion","C":"Inertia of direction","D":"None of these"}},"gu":{"question":"એક દોડવીર વિજેતા રેખાને પાર કર્યા બાદ શા માટે તરત ઉભો નથી રહી જતો.","options":{"A":"સ્થિરતાનું જડત્વ","B":"ગતિનું જડત્વ","C":"દિશાનું જડત્વ","D":"આમાંથી કોઈપણ નહિ"}},"answer":"B"},
+            {"question_number":55,"en":{"question":"Newton's first law applies to","options":{"A":"All reference frames","B":"Only inertial reference frames","C":"Only non-inertial reference frames","D":"None of these"}},"gu":{"question":"ન્યૂટનનો પહેલો નિયમ લાગુ પડે છે","options":{"A":"બધી નિર્દેશફ્રેમોમાં","B":"માત્ર જડત્વીય નિર્દેશફ્રેમોમાં","C":"માત્ર અજડત્વીય નિર્દેશફ્રેમોમાં","D":"આમાંથી કોઈપણ નહિ"}},"answer":"B"},
+            {"question_number":56,"en":{"question":"From Newton's second law of motion, it can be inferred that","options":{"A":"No force is required to move an object uniformly along a line","B":"Accelerated motion is always due to an external force","C":"The inertial mass of an object is equal to the force required per unit acceleration of the object.","D":"All of the above"}},"gu":{"question":"ન્યૂટનના બીજા ગતિના નિયમ દ્વારા, અનુમાનિત કરી શકાય છે કે","options":{"A":"રેખાની સાપેક્ષે પદાર્થને નિયમિત રીતે ગતિ કરાવવા માટે કોઈ બળની જરૂર નથી","B":"પ્રવેગિત ગતિ હંમેશા બાહ્ય બળને કારણે હોય છે","C":"કોઈ પદાર્થનો જડત્વીય દળ એ તે પદાર્થનાં એકમ દિઠ પ્રવેગ માટે જરૂર બળને સમાન હોય છે.","D":"આપેલ તમામ"}},"answer":"D"},
+            {"question_number":57,"en":{"question":"When an object is in equilibrium,","options":{"A":"It must be at rest","B":"No force must be acting on it.","C":"Its net acceleration must be zero","D":"All of the above"}},"gu":{"question":"જ્યારે કોઈ પદાર્થ સંતુલન સ્થિતિમાં હોય ત્યારે,","options":{"A":"તે સ્થિર હોવો જોઈએ","B":"તેના પર કોઈ બળ લાગતો ન હોવો જોઈએ.","C":"તેનો ચોખ્યો પ્રવેગ શૂન્ય હોવો જોઈએ","D":"આપેલ તમામ"}},"answer":"C"},
+            {"question_number":58,"en":{"question":"A body of mass 2 kg is sliding on a frictionless horizontal table with a constant velocity of 4 m/s. The force required to keep the body moving with the same velocity is N.","options":{"A":"8","B":"0","C":"\\(2 \\times 10^4\\)","D":"1/2"}},"gu":{"question":"2 kg દળનો એક પદાર્થ 4 m/s નાં અચળ વેગ સાથે ઘર્ષણ રહિત સમક્ષિતિજ ટેબલ પર ખસી રહ્યું છે. પદાર્થ ને એ જ વેગ સાથે ગતિમાં રાખવા માટે જરૂરી બળ N.","options":{"A":"8","B":"0","C":"\\(2 \\times 10^4\\)","D":"1/2"}},"answer":"B"},
+            {"question_number":59,"en":{"question":"A ball of mass 50 g is thrown from a height of 20 m. A boy standing on the ground hits the ball vertically upwards with a bat with an average force of 200 N, so that it attains a vertical height of 45 m. Find the time the ball remains in contact with the bat. [\\(g=10 \\text{ m/s}^2\\)]","options":{"A":"1/20th of a second","B":"1/40th of a second","C":"1/80th of a second","D":"1/120th of a second"}},"gu":{"question":"50 g દળનાં એક દડાને 20 m ની ઉંચાઈથી ફેકવામાં આવે છે. એક જમીન પર ઉભેલો છોકરો 200 N નાં સરેરાશ બળ સાથે બેટથી દડાને શિરોલંબ રીતે ઉપર તરફ મારે છે. જેથી તે 45 m ની શિરોલંબ ઉંચાઈને પ્રાપ્ત કરે છે. તો દડાનો બેટ સાથેનો સંપર્ક સાથે રહેવાનો સમય શોધો. [\\(g=10 \\text{ m/s}^2\\)]","options":{"A":"એક સેકન્ડનો 1/20th ભાગ","B":"એક સેકન્ડનો 1/40th ભાગ","C":"એક સેકન્ડનો 1/80th ભાગ","D":"એક સેકન્ડનો 1/120th ભાગ"}},"answer":"C"},
+            {"question_number":60,"en":{"question":"When a 4 kg rifle is fired, a 10 g bullet acquires an acceleration of \\(3 \\times 10^6 \\text{ cm/s}^2\\). The magnitude of the force acting on the rifle (in Newtons) is","options":{"A":"Zero","B":"120","C":"300","D":"3000"}},"gu":{"question":"જ્યારે 4 kg ની રાઈફલને છોડવામાં આવે છે, તો 10 g ની ગોળી \\(3 \\times 10^6 \\text{ cm/s}^2\\) નો પ્રવેગ મેળવે છે. રાઈફલ પર લાગતું બળનું મૂલ્ય (ન્યુટનમાં) છે","options":{"A":"શૂન્ય","B":"120","C":"300","D":"3000"}},"answer":"C"},
+            {"question_number":61,"en":{"question":"A man of mass 50 kg carries a bag of 40 N on his shoulder. The force exerted by the floor on his feet is ...... N","options":{"A":"882","B":"530","C":"90","D":"600"}},"gu":{"question":"50 kg દળનો એક માણસ તેના ખભા પર 40 N ની બેગને ઉપાડે છે. તો તળીયા (ફર્શ) વડે તેના પગ પર લગાવેલું બળ ...... N","options":{"A":"882","B":"530","C":"90","D":"600"}},"answer":"B"},
+            {"question_number":62,"en":{"question":"Two objects of masses \\(m_1\\) and \\(m_2\\) are connected by a light string passing over a frictionless and massless pulley. If the pulley moves vertically upwards with a constant acceleration \\(g/2\\), what will be the tension in the string?","options":{"A":"\\(\\frac{3m_1m_2}{m_1+m_2}g\\)","B":"\\(\\frac{m_1+m_2}{4m_1m_2}g\\)","C":"\\(\\frac{2m_1m_2}{m_1+m_2}g\\)","D":"\\(\\frac{m_1m_2}{m_1+m_2}g\\)"}},"gu":{"question":"બે પદાર્થો \\(m_1\\) અને \\(m_2\\) દળોનો ધર્ષણરહિત અને દળરહિત ગરગડી પરથી પસાર કરેલી હલકી દોરી વડે જોડાયેલા છે. જો ગરગડી અયળ પ્રવેગ \\(g/2\\) સાથે શિરોલંબ ઉપર તરફ ગતિ કરે છે, તો દોરીમાં ઉદભવતો તણાવ કેટલો હશે?","options":{"A":"\\(\\frac{3m_1m_2}{m_1+m_2}g\\)","B":"\\(\\frac{m_1+m_2}{4m_1m_2}g\\)","C":"\\(\\frac{2m_1m_2}{m_1+m_2}g\\)","D":"\\(\\frac{m_1m_2}{m_1+m_2}g\\)"}},"answer":"A"},
+            {"question_number":63,"en":{"question":"In a rocket, fuel burns at a rate of 2 kg/s. This fuel is ejected from the rocket with a velocity of 80 km/s. The force exerted on the rocket is N.","options":{"A":"16000","B":"160000","C":"1600","D":"16"}},"gu":{"question":"એક રોકેટમાં, 2 kg/s ની દરે ઈધણ (ફયૂલ) બળે છે. આ ઈંધણ રોકેટથી 80 km/s ના વેગ સાથે બહાર મુક્ત થાય છે. તો રોકેટ પર લગાડેલું બળ N.","options":{"A":"16000","B":"160000","C":"1600","D":"16"}},"answer":"B"},
+            {"question_number":64,"en":{"question":"A machine gun fires bullets of mass 65 g with a velocity of 1300 m/s. The person holding it can exert a maximum force of 169 N on the machine gun. How many bullets can he fire per second?","options":{"A":"1","B":"2","C":"3","D":"4"}},"gu":{"question":"એક મશીનગન 1300 m/s નાં વેગ સાથે 65 g દળની ગોળીઓ છોડે છે. તેને પકડનાર વ્યક્તિ મશીનગન પર 169 N નો મહત્તમ બળ લગાડી શકે છે. તો તે દર સેકંડમાં કેટલી ગોળીઓ છોડી શકશે?","options":{"A":"1","B":"2","C":"3","D":"4"}},"answer":"B"},
+            {"question_number":65,"en":{"question":"A bullet of mass 40 g is fired from a 10 kg gun. If the velocity of the bullet is 400 m/s, what is the recoil velocity of the gun?","options":{"A":"1.6 m/s in the direction of the bullet","B":"1.6 m/s opposite to the direction of the bullet","C":"1.8 m/s in the direction of the bullet","D":"1.8 m/s opposite to the direction of the bullet"}},"gu":{"question":"એક 10 kg દળની બંદૂકમાંથી 40 g દળની ગોળી છોડવામાં આવે છે. જો ગોળીનો વેગ 400 m/s છે, તો બંદુકનો પાછળ થવાનાં ધક્કાનો (રીકોઈલ) વેગ હશે?","options":{"A":"1.6 m/s ગોળીની દિશામાં","B":"1.6 m/s ગોળીની વિરૂદ્ધ દિશામાં","C":"1.8 m/s ગોળીની દિશામાં","D":"1.8 m/s ગોળીની વિરૂદ્ધ દિશામાં"}},"answer":"B"},
+            {"question_number":66,"en":{"question":"A rocket of mass 5700 kg ejects gases at a constant rate of 15 kg/s with a constant speed of 12 km/s. The acceleration of the rocket one minute after the blast is \\(\\text{m/s}^2\\). (\\(g=10 \\text{ m/s}^2\\))","options":{"A":"34.9","B":"27.5","C":"3.50","D":"13.5"}},"gu":{"question":"એક 5700 kg દળનું રોકેટ 12 km/s. ની અચળ ઝડપે 15 kg/s ની અચળ દરે વાયુઓ મુક્ત કરે છે તો વિસ્ફોટનાં મિનિટ બાદ રોકેટનો પ્રવેગ \\(\\text{m/s}^2\\) છે. (\\(g=10 \\text{ m/s}^2\\))","options":{"A":"34.9","B":"27.5","C":"3.50","D":"13.5"}},"answer":"B"},
+            {"question_number":67,"en":{"question":"A balloon contains 2 g of air. A small hole is pierced in it. The air comes out with a velocity of 4 m/s. If the balloon shrinks completely in 2.5 s, the average force acting on the balloon is N.","options":{"A":"0.008","B":"0.0032","C":"8","D":"3.2"}},"gu":{"question":"એક ફુગ્ગો 2 g હવા ધરાવે છે. તેમાં એક નાનું છિદ્ર પડ્યું છે. હવા 4 m/s નાં વેગ સાથે બહાર આવે છે. જો ફુગ્ગો 2.5 s માં સંપૂર્ણપણે સંકોચાઈ જાય છે. તો ફુગ્ગા પર લાગતું સરેરાશ બળ N.","options":{"A":"0.008","B":"0.0032","C":"8","D":"3.2"}},"answer":"B"},
+            {"question_number":68,"en":{"question":"A projectile is fired at an angle \\(\\theta\\) with the horizontal with velocity \\(u\\). At the highest point of its trajectory, it splits into three parts of masses \\(m\\), \\(m\\) and \\(2m\\). The first part falls vertically downwards with zero initial velocity and the second part returns to the point of projection along the same path. What will be the velocity of the third part of mass \\(2m\\) immediately after the explosion?","options":{"A":"\\(u \\cos(\\theta)\\)","B":"\\(3/2 u \\cos(\\theta)\\)","C":"\\(2u \\cos(\\theta)\\)","D":"\\(5/2 u \\cos(\\theta)\\)"}},"gu":{"question":"એક પ્રક્ષેપ્તને સમક્ષિતિજ \\(\\theta\\) કોણ \\(u\\) વેગે છોડવામાં આવે છે. તેના પ્રક્ષેપણ માર્ગનાં ઉચ્ચતમ બિંદુએ પહોચીને તે \\(m\\), \\(m\\) અને \\(2m\\) દળના ત્રણ ભાગોમાં વિભાજિત થાય છે. પહેલો ભાગ શૂન્ય પ્રારંભિક વેગ સાથે શિરોલંબ રીતે અધોદિશામાં પડે છે અને બીજો ભાગ તે જ માર્ગ દ્વારા પ્રક્ષેપણ બિંદુ સુધી પાછો આવે છે. તો વિસ્ફોટ બાદ તરત જ \\(2m\\) દળના ત્રીજા ભાગનો વેગ કેટલો હશે?","options":{"A":"\\(u \\cos(\\theta)\\)","B":"\\(3/2 u \\cos(\\theta)\\)","C":"\\(2u \\cos(\\theta)\\)","D":"\\(5/2 u \\cos(\\theta)\\)"}},"answer":"D"},
+            {"question_number":69,"en":{"question":"A 9 kg bomb explodes into two pieces of 3 kg and 6 kg. If the velocity of the 3 kg mass is 16 m/s, what is the kinetic energy of the 6 kg mass in Joules?","options":{"A":"196","B":"320","C":"192","D":"620"}},"gu":{"question":"એક 9 kg દળનો બોમ્બ 3 kg અને 6 kg નાં બે ટુકડાઓમાં ફાટે છે. જો 3 kg વાળા દળનો વેગ 16 m/s છે.તો 6 kg વાળા દળની ગતિઉર્જા જૂલમાં કેટલી હશે?","options":{"A":"196","B":"320","C":"192","D":"620"}},"answer":"C"},
+            {"question_number":70,"en":{"question":"A 6000 kg rocket is set for firing. If the exhaust speed of the gas is 1000 m/s, how many kg of gas must be ejected per second to provide the necessary thrust to overcome the weight of the rocket?","options":{"A":"30","B":"40","C":"50","D":"60"}},"gu":{"question":"એક 6000 kg નું રોકેટ ફાયરિંગ માટે સુયોજિત કરેલ છે. જો વાયુની નિકાસની ઝડપ 1000 m/s છે, તો રોકેટના વજનને ઘટાડવા માટે જરુરી પ્રવાહ પૂરો પાડવા માટે દરેક સેકેંડમાં kg વાયુ મુક્ત કરવો જોઈએ?","options":{"A":"30","B":"40","C":"50","D":"60"}},"answer":"D"}
+        ];
+
+        const uiText = {
+            en: {
+                quizTitle: "NEET Physics Quiz",
+                quizSubtitle: "Test your knowledge on the Laws of Motion.",
+                question: "Question",
+                score: "Score",
+                resultTitle: "Quiz Complete!",
+                resultText: "Your final score is",
+                outOf: "out of",
+                restartBtn: "Restart Quiz",
+                nextBtn: "Next Question"
+            },
+            gu: {
+                quizTitle: "NEET ભૌતિકશાસ્ત્ર ક્વિઝ",
+                quizSubtitle: "ગતિના નિયમો પર તમારા જ્ઞાનનું પરીક્ષણ કરો.",
+                question: "પ્રશ્ન",
+                score: "સ્કોર",
+                resultTitle: "ક્વિઝ પૂર્ણ!",
+                resultText: "તમારો અંતિમ સ્કોર છે",
+                outOf: "માંથી",
+                restartBtn: "ક્વિઝ ફરી શરૂ કરો",
+                nextBtn: "આગલો પ્રશ્ન"
+            }
+        };
+
+        const shuffledQuizData = quizData.sort(() => Math.random() - 0.5);
+
+        const questionArea = document.getElementById('question-area');
+        const resultArea = document.getElementById('result-area');
+        const questionNumberEl = document.getElementById('question-number');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const scoreDisplay = document.getElementById('score-display');
+        const finalScoreEl = document.getElementById('final-score');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const languageToggle = document.getElementById('language-toggle');
+        
+        // UI Text elements
+        const quizTitleEl = document.getElementById('quiz-title');
+        const quizSubtitleEl = document.getElementById('quiz-subtitle');
+        const resultTitleEl = document.getElementById('result-title');
+        const resultTextEl = document.getElementById('result-text-container');
+
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentLanguage = 'en';
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            
+            const elementsToTranslate = [
+                { el: quizTitleEl, key: 'quizTitle' },
+                { el: quizSubtitleEl, key: 'quizSubtitle' },
+                { el: resultTitleEl, key: 'resultTitle' },
+                { el: restartBtn, key: 'restartBtn' },
+                { el: nextBtn, key: 'nextBtn' },
+            ];
+
+            elementsToTranslate.forEach(item => {
+                if(item.el) item.el.textContent = uiText[lang][item.key];
+                 if(lang === 'gu') {
+                    if(item.el) item.el.classList.add('gujarati');
+                } else {
+                    if(item.el) item.el.classList.remove('gujarati');
+                }
+            });
+            
+            // Update dynamic text
+            updateScoreDisplay();
+            if(!questionArea.classList.contains('hidden')) {
+                showQuestion();
+            }
+            if(!resultArea.classList.contains('hidden')) {
+                showResult();
+            }
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            questionArea.classList.remove('hidden');
+            resultArea.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            setLanguage(languageToggle.checked ? 'gu' : 'en');
+        }
+
+        function showQuestion() {
+            resetState();
+            const currentQuestion = shuffledQuizData[currentQuestionIndex];
+            const langData = currentQuestion[currentLanguage];
+
+            questionNumberEl.textContent = `${uiText[currentLanguage].question} ${currentQuestionIndex + 1}/${shuffledQuizData.length}`;
+            questionTextEl.innerHTML = langData.question;
+            
+            if(currentLanguage === 'gu') {
+                questionTextEl.classList.add('gujarati');
+                 questionNumberEl.classList.add('gujarati');
+            } else {
+                questionTextEl.classList.remove('gujarati');
+                questionNumberEl.classList.remove('gujarati');
+            }
+
+
+            for (const key in langData.options) {
+                const button = document.createElement('button');
+                button.innerHTML = `<span class="font-bold mr-2">${key}.</span> ${langData.options[key]}`;
+                button.classList.add('option-btn', 'w-full', 'text-left', 'p-4', 'rounded-lg', 'border-2', 'border-gray-300', 'dark:border-gray-600', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'transition-colors', 'duration-200');
+                if(currentLanguage === 'gu') button.classList.add('gujarati');
+                button.dataset.answer = key;
+                button.addEventListener('click', selectAnswer);
+                optionsContainer.appendChild(button);
+            }
+            
+            // Render math equations after updating content
+            renderMathInElement(questionArea, {
+                 delimiters: [
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        }
+
+        function resetState() {
+            nextBtn.classList.add('hidden');
+            while (optionsContainer.firstChild) {
+                optionsContainer.removeChild(optionsContainer.firstChild);
+            }
+        }
+
+        function selectAnswer(e) {
+            const selectedBtn = e.currentTarget;
+            const selectedAnswer = selectedBtn.dataset.answer;
+            const correctAnswer = shuffledQuizData[currentQuestionIndex].answer;
+
+            if (selectedAnswer === correctAnswer) {
+                score++;
+                selectedBtn.classList.add('correct');
+            } else {
+                selectedBtn.classList.add('incorrect');
+            }
+            
+            updateScoreDisplay();
+
+            Array.from(optionsContainer.children).forEach(button => {
+                if (button.dataset.answer === correctAnswer) {
+                    button.classList.add('correct');
+                }
+                button.disabled = true;
+            });
+
+            if (shuffledQuizData.length > currentQuestionIndex + 1) {
+                nextBtn.classList.remove('hidden');
+            } else {
+                setTimeout(showResult, 1000);
+            }
+        }
+        
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = `${uiText[currentLanguage].score}: ${score}`;
+            if(currentLanguage === 'gu') {
+                scoreDisplay.classList.add('gujarati');
+            } else {
+                scoreDisplay.classList.remove('gujarati');
+            }
+        }
+
+        function showResult() {
+            questionArea.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+            const resultP = document.getElementById('result-text');
+            resultP.innerHTML = `${uiText[currentLanguage].resultText} <span class="font-bold text-blue-500">${score}</span> ${uiText[currentLanguage].outOf} <span class="font-bold">${shuffledQuizData.length}</span>.`;
+             if(currentLanguage === 'gu') {
+                resultP.classList.add('gujarati');
+            } else {
+                resultP.classList.remove('gujarati');
+            }
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        languageToggle.addEventListener('change', (e) => {
+            setLanguage(e.target.checked ? 'gu' : 'en');
+        });
+
+        nextBtn.addEventListener('click', handleNextButton);
+        restartBtn.addEventListener('click', startQuiz);
+
+        // Wait for KaTeX to load before starting the quiz
+        document.addEventListener('DOMContentLoaded', (event) => {
+             // It's better to ensure KaTeX is loaded, but auto-render script handles this.
+             // We can start the quiz right away.
+            startQuiz();
+        });
+    </script>
+</body>
+</html>
+
+
