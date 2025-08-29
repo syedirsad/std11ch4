@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilingual NEET Physics Quiz</title>
+    <title>Modern Physics Quiz - Laws of Motion</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Baloo+Bhai+2:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Modern Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&family=Noto+Sans+Gujarati:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- KaTeX for mathematical rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGqsACycJdHgV" crossorigin="anonymous"></script>
@@ -21,7 +24,7 @@
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
             color: var(--text-light);
             min-height: 100vh;
@@ -42,9 +45,19 @@
                 radial-gradient(circle at 40% 80%, rgba(67, 97, 238, 0.1) 0%, transparent 20%);
             z-index: -1;
         }
-
+        
+        .physics-icon {
+            position: absolute;
+            opacity: 0.03;
+            font-size: 8rem;
+            z-index: -1;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+        
         .gujarati {
-            font-family: 'Baloo Bhai 2', sans-serif;
+            font-family: 'Noto Sans Gujarati', sans-serif;
+            font-weight: 500;
         }
         
         #quiz-container {
@@ -66,10 +79,10 @@
             height: 4px;
             background: linear-gradient(90deg, var(--accent-blue), var(--accent-light));
         }
-
+        
         .header-graphic {
-            height: 100px;
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(76, 201, 240, 0.1) 100%);
+            height: 120px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.2) 0%, rgba(76, 201, 240, 0.2) 100%);
             border-bottom: 1px solid rgba(65, 90, 119, 0.5);
             position: relative;
             overflow: hidden;
@@ -83,8 +96,8 @@
         
         .moving-object {
             position: absolute;
-            width: 15px;
-            height: 15px;
+            width: 20px;
+            height: 20px;
             background: var(--accent-light);
             border-radius: 50%;
             box-shadow: 0 0 15px var(--accent-light);
@@ -92,11 +105,11 @@
         }
         
         @keyframes moveObject {
-            0% { transform: translateX(-20px) translateY(50px); }
-            25% { transform: translateX(25%) translateY(20px); }
-            50% { transform: translateX(50%) translateY(70px); }
-            75% { transform: translateX(75%) translateY(30px); }
-            100% { transform: translateX(calc(100% + 20px)) translateY(50px); }
+            0% { transform: translateX(-30px) translateY(60px); }
+            25% { transform: translateX(25%) translateY(30px); }
+            50% { transform: translateX(50%) translateY(80px); }
+            75% { transform: translateX(75%) translateY(40px); }
+            100% { transform: translateX(calc(100% + 30px)) translateY(60px); }
         }
         
         .option-btn {
@@ -106,6 +119,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            font-family: 'Poppins', sans-serif;
             color: var(--text-light);
         }
         
@@ -114,7 +128,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             border-color: var(--accent-blue);
         }
-
+        
         .option-btn.correct {
             background: rgba(34, 197, 94, 0.2);
             border-color: #16a34a;
@@ -140,6 +154,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            font-family: 'Outfit', sans-serif;
         }
         
         #next-btn:hover, #restart-btn:hover {
@@ -152,6 +167,7 @@
             border: 1px solid rgba(65, 90, 119, 0.7);
             border-radius: 12px;
             padding: 8px 16px;
+            font-family: 'Outfit', sans-serif;
             color: var(--accent-light);
         }
         
@@ -169,10 +185,14 @@
             border-radius: 3px;
             transition: width 0.5s ease;
         }
-
+        
         .katex {
            font-size: 1.1em;
            color: var(--text-light);
+        }
+
+        #question-text {
+            font-family: 'Poppins', sans-serif;
         }
         #question-text p {
             margin-bottom: 0.75rem;
@@ -180,6 +200,11 @@
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
+    <!-- Physics Icons as Background Decorations -->
+    <div class="physics-icon" style="top: 10%; left: 5%;">F=ma</div>
+    <div class="physics-icon" style="top: 70%; left: 80%;">v=u+at</div>
+    <div class="physics-icon" style="top: 40%; left: 75%;">p=mv</div>
+    <div class="physics-icon" style="top: 20%; left: 60%;">s=ut+½at²</div>
 
     <div id="quiz-container" class="w-full max-w-2xl mx-auto transition-all duration-300">
         <div class="header-graphic">
@@ -300,12 +325,27 @@
             {"question_number":67,"en":{"question":"A balloon contains 2 g of air. A small hole is pierced in it. The air comes out with a velocity of 4 m/s. If the balloon shrinks completely in 2.5 s, the average force acting on the balloon is N.","options":{"A":"0.008","B":"0.0032","C":"8","D":"3.2"}},"gu":{"question":"એક ફુગ્ગો 2 g હવા ધરાવે છે. તેમાં એક નાનું છિદ્ર પડ્યું છે. હવા 4 m/s નાં વેગ સાથે બહાર આવે છે. જો ફુગ્ગો 2.5 s માં સંપૂર્ણપણે સંકોચાઈ જાય છે. તો ફુગ્ગા પર લાગતું સરેરાશ બળ N.","options":{"A":"0.008","B":"0.0032","C":"8","D":"3.2"}},"answer":"B"},
             {"question_number":68,"en":{"question":"A projectile is fired at an angle \\(\\theta\\) with the horizontal with velocity \\(u\\). At the highest point of its trajectory, it splits into three parts of masses \\(m\\), \\(m\\) and \\(2m\\). The first part falls vertically downwards with zero initial velocity and the second part returns to the point of projection along the same path. What will be the velocity of the third part of mass \\(2m\\) immediately after the explosion?","options":{"A":"\\(u \\cos(\\theta)\\)","B":"\\(3/2 u \\cos(\\theta)\\)","C":"\\(2u \\cos(\\theta)\\)","D":"\\(5/2 u \\cos(\\theta)\\)"}},"gu":{"question":"એક પ્રક્ષેપ્તને સમક્ષિતિજ \\(\\theta\\) કોણ \\(u\\) વેગે છોડવામાં આવે છે. તેના પ્રક્ષેપણ માર્ગનાં ઉચ્ચતમ બિંદુએ પહોચીને તે \\(m\\), \\(m\\) અને \\(2m\\) દળના ત્રણ ભાગોમાં વિભાજિત થાય છે. પહેલો ભાગ શૂન્ય પ્રારંભિક વેગ સાથે શિરોલંબ રીતે અધોદિશામાં પડે છે અને બીજો ભાગ તે જ માર્ગ દ્વારા પ્રક્ષેપણ બિંદુ સુધી પાછો આવે છે. તો વિસ્ફોટ બાદ તરત જ \\(2m\\) દળના ત્રીજા ભાગનો વેગ કેટલો હશે?","options":{"A":"\\(u \\cos(\\theta)\\)","B":"\\(3/2 u \\cos(\\theta)\\)","C":"\\(2u \\cos(\\theta)\\)","D":"\\(5/2 u \\cos(\\theta)\\)"}},"answer":"D"},
             {"question_number":69,"en":{"question":"A 9 kg bomb explodes into two pieces of 3 kg and 6 kg. If the velocity of the 3 kg mass is 16 m/s, what is the kinetic energy of the 6 kg mass in Joules?","options":{"A":"196","B":"320","C":"192","D":"620"}},"gu":{"question":"એક 9 kg દળનો બોમ્બ 3 kg અને 6 kg નાં બે ટુકડાઓમાં ફાટે છે. જો 3 kg વાળા દળનો વેગ 16 m/s છે.તો 6 kg વાળા દળની ગતિઉર્જા જૂલમાં કેટલી હશે?","options":{"A":"196","B":"320","C":"192","D":"620"}},"answer":"C"},
-            {"question_number":70,"en":{"question":"A 6000 kg rocket is set for firing. If the exhaust speed of the gas is 1000 m/s, how many kg of gas must be ejected per second to provide the necessary thrust to overcome the weight of the rocket?","options":{"A":"30","B":"40","C":"50","D":"60"}},"gu":{"question":"એક 6000 kg નું રોકેટ ફાયરિંગ માટે સુયોજિત કરેલ છે. જો વાયુની નિકાસની ઝડપ 1000 m/s છે, તો રોકેટના વજનને ઘટાડવા માટે જરુરી પ્રવાહ પૂરો પાડવા માટે દરેક સેકેંડમાં kg વાયુ મુક્ત કરવો જોઈએ?","options":{"A":"30","B":"40","C":"50","D":"60"}},"answer":"D"}
-        ];
+            {"question_number":70,"en":{"question":"A 6000 kg rocket is set for firing. If the exhaust speed of the gas is 1000 m/s, how many kg of gas must be ejected per second to provide the necessary thrust to overcome the weight of the rocket?","options":{"A":"30","B":"40","C":"50","D":"60"}},"gu":{"question":"એક 6000 kg નું રોકેટ ફાયરિંગ માટે સુયોજિત કરેલ છે. જો વાયુની નિકાસની ઝડપ 1000 m/s છે, તો રોકેટના વજનને ઘટાડવા માટે જરુરી પ્રવાહ પૂરો પાડવા માટે દરેક સેકેંડમાં kg વાયુ મુક્ત કરવો જોઈએ?","options":{"A":"30","B":"40","C":"50","D":"60"}},"answer":"D"},
+            {"question_number":71,"en":{"question":"If the net force acting on a system is zero, then","options":{"A":"its momentum is conserved","B":"All of the given","C":"its kinetic energy can increase","D":"the acceleration of one of its constituent particles can be non-zero"}},"gu":{"question":"જો તંત્ર પર લાગતું પરિણામી (Net) બળ શૂન્ય હોય તો","options":{"A":"તેનું વેગમાન સંરક્ષી છે","B":"આપેલ તમામ","C":"તેની ગતિ ઉર્જા વધી શકે","D":"તેના એક બનાવનાર કણનો પ્રવેગ અશૂન્ય હોઈ શકે"}},"answer":"B"},
+            {"question_number":72,"en":{"question":"A gunman, along with his gun, has a mass of 100 kg, is standing on a smooth surface and fires 10 shots horizontally. The mass of each bullet is 10 g, and the velocity of the gun is 800 m/s. After firing 10 shots, the gunman will acquire a velocity of ms⁻¹","options":{"A":"8","B":"0.8","C":"0.08","D":"-0.8"}},"gu":{"question":"એક બંદૂકધારીનું, બંદૂક સાથેનું દળ 100 kg છે, જે સરળ સપાટી પર ઉભેલો છે અને 10 shot સમક્ષિતિજ રીતે છોડે છે. દરેક ગોળીનું દળ 10 g છે. અને બંદૂકનો વેગ 800 m/s છે. 10 shot છોડયા.પછી બંદૂકધારી ms⁻¹ વેગ મેળવશે.","options":{"A":"8","B":"0.8","C":"0.08","D":"-0.8"}},"answer":"B"},
+            {"question_number":73,"en":{"question":"A spring is compressed by two toy carts of masses m₁ and m₂. When both carts are released, they exert equal and opposite average forces on each other for the same time. If v₁ and v₂ are the velocities of the toy carts and there is no friction between the cart and the ground, then","options":{"A":"v₁/v₂ = m₁/m₂","B":"v₁/v₂ = m₂/m₁","C":"v₁/v₂ = -m₂/m₁","D":"v₁/v₂ = -m₁/m₂"}},"gu":{"question":"m₁ અને m₂ દળની બે રમકડાની ગાડી દ્વારા સ્પ્રંગનો દબાવવામાં આવે છે. જ્યારે બંને કારને છોડવામાં આવે ત્યારે તે બંને કાર પર સમાન સમયમાં સમાન અને વિદુદ્ધ સરેરાશ બળ લગાડે છે. જો v₁ અને v₂ એ રમકડાની ગાડીના વેગ હોય અને ગાડી તથા જમીન વચ્ચે કોઈ ઘર્ષણ ના હોય, તો","options":{"A":"v₁/v₂ = m₁/m₂","B":"v₁/v₂ = m₂/m₁","C":"v₁/v₂ = -m₂/m₁","D":"v₁/v₂ = -m₁/m₂"}},"answer":"C"},
+            {"question_number":74,"en":{"question":"A small piece of weight 100 g is tied to a spring with a spring constant of 7.5 N/m and length 20 cm. The other end of the spring is tied tightly at point A. If the piece moves in a circular path on a smooth horizontal surface with a constant angular velocity of 5 rad/s at point A, the tension produced in the spring is N.","options":{"A":"1.5","B":"0.75","C":"0.25","D":"0.50"}},"gu":{"question":"100 g વજનનો એક નાના ટુકડાને 7.5 N/m સ્પ્રિંગ અચળાંક અને 20 cm લંબાઈ ધરાવતી સ્પ્રિંગ સાથે બાંધવામાં આવે છે. સ્પ્રિંગનો બીજો છેડો A બિંદુ એ સજ્જડ રીતે બાંધેલો છે. જો ટૂકડો વર્તુળાકાર માર્ગમાં લીસી સમક્ષિતિજ સપાટી પર 5 rad/s નો અચળ કોણીય વેગ સાથે A બિંદુ પાસે ગતિ કરે છે, તો સ્પ્રિંગમાં ઉદ્દભવતું તણાવ N.","options":{"A":"1.5","B":"0.75","C":"0.25","D":"0.50"}},"answer":"B"},
+            {"question_number":75,"en":{"question":"A man of 60 kg runs on the road and suddenly jumps into a stationary trolley car of mass 120 kg. Then, the trolley car starts moving with a velocity of 2 ms⁻¹. The velocity of the running man when he jumps into the car is ms⁻¹ .","options":{"A":"5","B":"6","C":"2","D":"1"}},"gu":{"question":"60 kg નો એક વ્યક્તિ રસ્તા ઉપર દોડે છે અને એકદમ જ 120 kg દળ ધરાવતી સ્થિર ટ્રોલી કારમાં કૂદકો મારે છે. પછી, ટ્રોલી કાર 2 ms⁻¹ ના વેગથી ગતિ કરવાનું શરૂ કરે છે. જ્યારે માણસ કારની અંદર કૂદકો મારે છે ત્યારે દોડતા માણસનો વેગ ms⁻¹  .","options":{"A":"5","B":"6","C":"2","D":"1"}},"answer":"B"},
+            {"question_number":76,"en":{"question":"A block of mass M inside a box moves downwards with an acceleration 'a'. The block exerts a force on the bottom of the box equal to one-fourth of its weight. The value of 'a' will be.","options":{"A":"g/4","B":"g/2","C":"3g/4","D":"g"}},"gu":{"question":"એક ખોખાંની અંદર M જેટલું દળ ધરાવતું ચોસલું 'a' જેટલા પ્રવેગથી નીયે તરફ ગતિ કરે છે. ચોસલું બોક્ષના તળિયા ઉપર તેના વજન કરતા યોથા ભાગનું બળ લગાડે છે. 'a' નું મૂલ્ય હશે.","options":{"A":"g/4","B":"g/2","C":"3g/4","D":"g"}},"answer":"C"},
+            {"question_number":77,"en":{"question":"A 50 kg monkey climbs on a rope that can withstand a tension (T) of 350 N. First he descends on the rope with an acceleration of 4 ms⁻² and then climbs up the rope with an acceleration of 5 ms⁻². Choose the correct option: (take g = 10 ms⁻²).","options":{"A":"T = 700 N while climbing up","B":"T = 350 N while descending","C":"The rope will break while climbing up.","D":"The rope will break while descending."}},"gu":{"question":"50 kg નો વાંદરો, 350 N નું તણાવ (T) સહન કરી શકે તેવા દોરડા ઉપર ચઢે છે. પહેલાં તે 4 ms⁻² ના પ્રવેગ થી દોરડા પર નીચે ઉતરે છે અને પછી 5 ms⁻² ના પ્રવેગથી દોરડા પર ઉપર ચઢે છે. સાચો વિકલ્પ પસંદ કરો : g = 10 ms⁻²) લો.","options":{"A":"ઉપર ચઢતી વખતે T = 700 N","B":"નીચે ઉતરતી વખતે T = 350 N","C":"ઉપર ચઢતી વખતે દોરડું તૂટી જશે.","D":"નીચે ઉતરતી વખતે દોરડું તૂટી જશે."}},"answer":"C"},
+            {"question_number":78,"en":{"question":"A block A slides down a frictionless incline of length l and inclination 30°, placed in a lift moving upwards with a uniform velocity v, in 2 s. If the inclination is changed to 45°, it will take s to slide down the incline.","options":{"A":"2.66","B":"0.83","C":"1.68","D":"0.70"}},"gu":{"question":"નિયમીત વેગ v થી ઉપર તરફ ગતિ કરતી લિફટટમાં રાખેલ l લંબાઈના અને 30° નો નમન કોણ ઘરાવતા ઘર્ષણરહિત ઢોળાવ પરથી એક ચોસલું A , 2 s માં નીચે સરકે છે. જે નમન બદલીને 45° કરવામાં આવે તો ઢાળ પર સરકીને નીચે આવવા તે . \$ સમય લેશે.","options":{"A":"2.66","B":"0.83","C":"1.68","D":"0.70"}},"answer":"C"},
+            {"question_number":79,"en":{"question":"A balloon has a mass of 10 g in air. Air escapes from the balloon at a uniform speed of 4.5 cm/s. If the balloon becomes completely empty in 5 s, then the average force acting on the balloon will be dyne.","options":{"A":"3","B":"9","C":"12","D":"18"}},"gu":{"question":"એક ફુગ્ગાનું હવામાં દળ 10 g છે. ફુગ્ગામાંથી 4.5 cm/s ની નિયમીત ઝડપથી હવા નિકળે છે. જો ફૂગ્ગો 5 s માં સંપૂર્ણ ખાલી થઈ જાય તો ફુગ્ગા ઉ૫૨ લાગતું સરેરાશ બળ dyne થશે.","options":{"A":"3","B":"9","C":"12","D":"18"}},"answer":"B"},
+            {"question_number":80,"en":{"question":"One end of a massless spring with spring constant k and natural length l₀ is attached to a small object of mass m lying on a frictionless table. The spring remains horizontal. If the object is made to rotate with an angular velocity ω about an axis passing through the fixed end, then the tension produced in the spring will be.","options":{"A":"\\(\\frac{k-m\\omega^2l_0}{m\\omega^2}\\)","B":"\\(\\frac{m\\omega^2l_0}{k+m\\omega^2}\\)","C":"\\(\\frac{m\\omega^2l_0}{k-m\\omega^2}\\)","D":"\\(\\frac{k+m\\omega^2l_0}{m\\omega^2}\\)"}},"gu":{"question":"k જેટલો સ્પ્રિંગ અચળાંક અને l₀ જેટલી પ્રાકૃતિક લંબાઈ ધરાવતી દળ રહિત સ્પ્રિંગના એક છેડાને ધર્ષણરહિત ટેબલ પર રહેલા m દળ ધરાવતા નાના પદાર્થ સાથે જોડવામાં આવે છે. સ્પ્રિંગ સમક્ષિતિજ રહે છે. જો વસ્તુને જડિત છેડામાંથી પસાર થતી અક્ષને અનુલક્ષીને w જેટલા કોણીય વેગ સાથે ભ્રમણ કરાવવામાં આવે તો સ્પ્રિંગમાં ઉત્પન્ન ખેંચાણ થશે.","options":{"A":"\\(\\frac{k-m\\omega^2l_0}{m\\omega^2}\\)","B":"\\(\\frac{m\\omega^2l_0}{k+m\\omega^2}\\)","C":"\\(\\frac{m\\omega^2I_0}{k-m\\omega^2}\\)","D":"\\(\\frac{k+m\\omega^2l_0}{m\\omega^2}\\)"}},"answer":"C"},
+            {"question_number":81,"en":{"question":"A 10 kg mass is suspended vertically from the ceiling with the help of a 5 m long rope. A force of 30 N is applied in the horizontal direction at the midpoint of the rope. The angle of the rope with the vertical is \\(\\theta = \\tan^{-1}(x \\times 10^{-1})\\). The value of x will be. (g = 10m/s²)","options":{"A":"2","B":"5","C":"4","D":"3"}},"gu":{"question":"10 kg દળને 5 m લાંબા દોરડાની મદદથી છત પરથી શિરોલંબ રીતે લટકાવવામાં આવેલ છે. દોરડાંના મધ્યબિંદુ આગળ 30 N જેટલું બળ સમક્ષિતિજ દિશામાં લગાવવામાં આવે છે. દોરડાનો શિરોલંબ સાથેનો કોણ \\(\\theta = \\tan^{-1}(x \\times 10^{-1})\\) છે. x નું મૂલ્ય થશે. (g = 10m/s²)","options":{"A":"2","B":"5","C":"4","D":"3"}},"answer":"D"},
+            {"question_number":82,"en":{"question":"A body of mass M explodes into three pieces having a mass ratio of 1 : 1 : 2. The two lighter pieces are thrown off at right angles to each other with velocities of 30 ms⁻¹ and 40 ms⁻¹ respectively. The velocity of the third piece will be ms⁻¹.","options":{"A":"15","B":"25","C":"35","D":"50"}},"gu":{"question":"M દળ ધરાવતો એક પદાર્થ 1 : 1 : 2 દળ ગુણોત્તર ધરાવતા ત્રણ ટૂકડાઓમાં ફૂટે (થાય છે). બે હલકા ટૂકડાઓ અનુક્રમે 30 ms⁻¹ અને 40 ms⁻¹ ના વેગ સાથે એક્બીજાને લંબરૂપે ફંગોળોય જાય છે. ત્રીજા ટૂકડાનો વેગ ms⁻¹ थशे.","options":{"A":"15","B":"25","C":"35","D":"50"}},"answer":"B"},
+            {"question_number":83,"en":{"question":"Two billiard balls of 0.05 kg moving in opposite directions with 10 ms⁻¹ collide and rebound with the same speed. If the contact time is t = 0.005 s, then the force exerted by one on the other will be N.","options":{"A":"100","B":"200","C":"300","D":"400"}},"gu":{"question":"0.05 kg નાં બે બિલિયર્ડ બોલ વિરુદ્ધ દિશામાં 10 ms⁻¹ સાથે ગતિ કરતાં સંઘાત (અથડામણ) અનુભવે છે અને સમાન ઝડપ સાથે પાછા ફરે છે. જો સંપર્ક સમય t = 0.005 s હોય તો એકબીજાને કારણે પ્રવર્તતું બળ N હશે.","options":{"A":"100","B":"200","C":"300","D":"400"}},"answer":"B"},
+            {"question_number":84,"en":{"question":"An object of mass 10 kg is projected at an angle of 45° with respect to the horizontal. Observing the path of the object, it passes through the point (20, 10). If the time of its path is T, then the momentum vector at time \\(t = T/\\sqrt{2}\\) will be. [take g=10m/s²].","options":{"A":"\\(100\\hat{i}+(100\\sqrt{2}-200)\\hat{j}\\)","B":"\\(100\\sqrt{2}\\hat{i}+(100-200\\sqrt{2})\\hat{j}\\)","C":"\\(100\\hat{i}+(100-200\\sqrt{2})\\hat{j}\\)","D":"\\(100\\sqrt{2}\\hat{i}+(100\\sqrt{2}-200)\\hat{j}\\)"}},"gu":{"question":"10 kg દળ ઘરાવતી વસ્તુને સમક્ષિતિજની સાપેક્ષે 45° ના કોણે પ્રક્ષિપ્ત કરવામાં આવે છે. વસ્તુના ગતિપથને અવલોક્તા તે (20, 10) બિંદુમાંથી પસાર થાય છે. જો તેના ગતિપથનો સમય T હોય,તો \\(t = T/\\sqrt{2}\\) સમયે વેગમાન સદિશ • થશે.[ g=10m/s²] લો.","options":{"A":"\\(100\\hat{i}+(100\\sqrt{2}-200)\\hat{j}\\)","B":"\\(100\\sqrt{2}\\hat{i}+(100-200\\sqrt{2})\\hat{j}\\)","C":"\\(100\\hat{i}+(100-200\\sqrt{2})\\hat{j}\\)","D":"\\(100\\sqrt{2}\\hat{i}+(100\\sqrt{2}-200)\\hat{j}\\)"}},"answer":"D"},
+            {"question_number":85,"en":{"question":"<p>In two different experiments, a 5 kg mass object moving with a speed of 25 ms⁻¹ strikes different walls and comes to rest in (i) 3 seconds and (ii) 5 seconds respectively.</p><p>Choose the correct option from the following.</p>","options":{"A":"The impulse and average force on the object will be the same in both cases.","B":"The impulse will be the same in both cases but the average force will be different.","C":"The average force will be the same in both cases but the impulse will be different.","D":"The average force and impulse will be different in both cases."}},"gu":{"question":"<p>બે જુદા-જુદા પ્રયોગોમાં 25 ms⁻¹ ની ઝડપથી ગતિ કરતો 5 kg દળનો એક પદાર્થ જુદી-જુદી દ્વિવાલોને અથડાય છે અને અનુક્રમે (i)3 સેક્ન્ડ અને (ii)5 સેકન્ડમાં વિરામસ્થિતિમાં આવે છે.</p><p>નીચે આપેલામાંથી સાચો વિકલ્પ પસંદ કરો.</p>","options":{"A":"બંને કિસ્સામાં પદાર્થ પરનો આઘાત અને સરેરાશ બળ સમાન હશે.","B":"બંને કિસ્સામાં આઘાત સમાન હશે પરેતુ સરેરાશ બળ જુદું-જુદું હશે.","C":"બંને કિસ્સામાં સરેરશશ બળ સમાન હશે પરંતુ આધાત જુદો-જુદો હશે.","D":"બંને કિસ્સામાં સરેરાશ બળ અને આધાત જુદા-જુદા હશે."}},"answer":"B"}
+        ]
 
         const uiText = {
             en: {
-                quizTitle: "NEET Physics Quiz",
+                quizTitle: "Modern Physics Quiz",
                 quizSubtitle: "Test your knowledge on the Laws of Motion.",
                 question: "Question",
                 score: "Score",
@@ -316,7 +356,7 @@
                 nextBtn: "Next Question"
             },
             gu: {
-                quizTitle: "NEET ભૌતિકશાસ્ત્ર ક્વિઝ",
+                quizTitle: "આધુનિક ભૌતિકશાસ્ત્ર ક્વિઝ",
                 quizSubtitle: "ગતિના નિયમો પર તમારા જ્ઞાનનું પરીક્ષણ કરો.",
                 question: "પ્રશ્ન",
                 score: "સ્કોર",
@@ -338,15 +378,13 @@
         const nextBtn = document.getElementById('next-btn');
         const restartBtn = document.getElementById('restart-btn');
         const scoreDisplay = document.getElementById('score-display');
-        const finalScoreEl = document.getElementById('final-score');
-        const totalQuestionsEl = document.getElementById('total-questions');
+        const progressFill = document.getElementById('progress-fill');
         const languageToggle = document.getElementById('language-toggle');
         
-        // UI Text elements
         const quizTitleEl = document.getElementById('quiz-title');
         const quizSubtitleEl = document.getElementById('quiz-subtitle');
         const resultTitleEl = document.getElementById('result-title');
-        const resultTextEl = document.getElementById('result-text-container');
+        const resultTextEl = document.getElementById('result-text');
 
 
         let currentQuestionIndex = 0;
@@ -374,8 +412,8 @@
                 }
             });
             
-            // Update dynamic text
             updateScoreDisplay();
+            updateProgressBar();
             if(!questionArea.classList.contains('hidden')) {
                 showQuestion();
             }
@@ -413,20 +451,20 @@
             for (const key in langData.options) {
                 const button = document.createElement('button');
                 button.innerHTML = `<span class="font-bold mr-2">${key}.</span> ${langData.options[key]}`;
-                button.classList.add('option-btn', 'w-full', 'text-left', 'p-4', 'rounded-lg', 'border-2', 'border-gray-300', 'dark:border-gray-600', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'transition-colors', 'duration-200');
+                button.classList.add('option-btn', 'w-full', 'text-left', 'p-4');
                 if(currentLanguage === 'gu') button.classList.add('gujarati');
                 button.dataset.answer = key;
                 button.addEventListener('click', selectAnswer);
                 optionsContainer.appendChild(button);
             }
             
-            // Render math equations after updating content
             renderMathInElement(questionArea, {
                  delimiters: [
                     {left: "\\(", right: "\\)", display: false},
                     {left: "\\[", right: "\\]", display: true}
                 ]
             });
+            updateProgressBar();
         }
 
         function resetState() {
@@ -473,11 +511,19 @@
             }
         }
 
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex) / shuffledQuizData.length) * 100;
+            progressFill.style.width = `${progress}%`;
+        }
+
+
         function showResult() {
             questionArea.classList.add('hidden');
             resultArea.classList.remove('hidden');
+            progressFill.style.width = '100%';
+
             const resultP = document.getElementById('result-text');
-            resultP.innerHTML = `${uiText[currentLanguage].resultText} <span class="font-bold text-blue-500">${score}</span> ${uiText[currentLanguage].outOf} <span class="font-bold">${shuffledQuizData.length}</span>.`;
+            resultP.innerHTML = `${uiText[currentLanguage].resultText} <span class="font-bold text-blue-400">${score}</span> ${uiText[currentLanguage].outOf} <span class="font-bold">${shuffledQuizData.length}</span>.`;
              if(currentLanguage === 'gu') {
                 resultP.classList.add('gujarati');
             } else {
@@ -497,15 +543,11 @@
         nextBtn.addEventListener('click', handleNextButton);
         restartBtn.addEventListener('click', startQuiz);
 
-        // Wait for KaTeX to load before starting the quiz
         document.addEventListener('DOMContentLoaded', (event) => {
-             // It's better to ensure KaTeX is loaded, but auto-render script handles this.
-             // We can start the quiz right away.
             startQuiz();
         });
     </script>
 </body>
 </html>
-
-
+```eof
 
